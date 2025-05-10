@@ -1,4 +1,6 @@
+import 'package:donora_dev/screens/seeker/seeker_nav.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../routes/app_routes.dart';
 
@@ -266,16 +268,26 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
                 ),
               ),
               onPressed:() {
-                Navigator.pushNamed(context, AppRoutes.seekerSearchDonor);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SeekerNav(initialIndex: 2),
+                  ),
+                );
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(Icons.search_rounded, size: 20),
-                  SizedBox(width: 8),
-                  Text(
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/search-icon.svg',
+                    width: 24,
+                    height: 24,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(width: 15),
+                  const Text(
                     "Cari Donor Darah",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                 ],
               ),

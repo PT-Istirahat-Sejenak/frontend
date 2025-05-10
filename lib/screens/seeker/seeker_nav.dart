@@ -10,14 +10,21 @@ import '../chat/chat_screen.dart';
 import 'seeker_profile_screen.dart';
 
 class SeekerNav extends StatefulWidget {
-  const SeekerNav({super.key});
+  final int initialIndex;
+  const SeekerNav({super.key, this.initialIndex = 0});
 
   @override
   State<SeekerNav> createState() => _SeekerNavState();
 }
 
 class _SeekerNavState extends State<SeekerNav> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex;
+  }
 
   final List<Widget> _pages = [
     SeekerHomeScreen(),

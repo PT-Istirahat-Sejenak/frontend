@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../routes/app_routes.dart';
 
 class SeekerSearchDonorScreen extends StatefulWidget {
@@ -19,7 +20,7 @@ class _SeekerSearchDonorScreenState extends State<SeekerSearchDonorScreen> {
 
   final List<String> _bloodTypes = ['A', 'B', 'AB', 'O'];
   final List<String> _rhesusTypes = ['+', '-'];
-  final List<String> _urgencyLevels = ['Mendesak', 'Sedang', 'Rendah'];
+  final List<String> _urgencyLevels = ['Biasa', 'Penting', 'Mendesak'];
 
   @override
   void dispose() {
@@ -32,14 +33,11 @@ class _SeekerSearchDonorScreenState extends State<SeekerSearchDonorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
+        centerTitle: true,
         title: const Text(
           'Cari Pendonor Darah',
           style: TextStyle(
@@ -140,20 +138,20 @@ class _SeekerSearchDonorScreenState extends State<SeekerSearchDonorScreen> {
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(
-          color: Colors.black54,
+          color: Colors.black,
           fontSize: 14,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Colors.grey),
+          borderSide: const BorderSide(color: Colors.black),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Colors.grey),
+          borderSide: const BorderSide(color: Colors.black),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Colors.grey),
+          borderSide: const BorderSide(color: Colors.black),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 12,
@@ -179,15 +177,15 @@ class _SeekerSearchDonorScreenState extends State<SeekerSearchDonorScreen> {
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Colors.grey),
+          borderSide: const BorderSide(color: Colors.black),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Colors.grey),
+          borderSide: const BorderSide(color: Colors.black),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Colors.grey),
+          borderSide: const BorderSide(color: Colors.black),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 12,
@@ -273,7 +271,12 @@ class _SeekerSearchDonorScreenState extends State<SeekerSearchDonorScreen> {
             ),
           );
         },
-        icon: const Icon(Icons.search, color: Colors.white),
+        icon: SvgPicture.asset(
+          'assets/icons/search-icon.svg',
+          width: 24,
+          height: 24,
+          color: Colors.white,
+        ),
         label: const Text(
           'Cari Pendonor Sekarang',
           style: TextStyle(
