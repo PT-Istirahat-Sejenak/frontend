@@ -9,12 +9,12 @@ class AuthUtils {
   static void redirectToDashboard(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    if (userProvider.role == UserRole.patient) {
+    if (userProvider.role == UserRole.pendonor) {
       Navigator.pushReplacementNamed(
         context,
         AppRoutes.donorNav,
       );
-    } else if (userProvider.role == UserRole.seeker) {
+    } else if (userProvider.role == UserRole.pencari) {
       Navigator.pushReplacementNamed(
         context,
         AppRoutes.seekerNav,

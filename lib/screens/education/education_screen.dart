@@ -305,7 +305,7 @@ class _EducationScreenState extends State<EducationScreen> {
   }
 
   void _navigateToDetail(EducationArticle article) {
-    if (widget.userRole == UserRole.patient) {
+    if (widget.userRole == UserRole.pendonor) {
       Navigator.pushNamed(
         context, 
         AppRoutes.donorEducationDetail,

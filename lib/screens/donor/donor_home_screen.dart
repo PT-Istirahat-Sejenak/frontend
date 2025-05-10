@@ -148,82 +148,85 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
     );
   }
 
-  Widget _buildDonationPrompt(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE6F0FF),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Left side - Text content
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      "Sudah donor darah?",
-                      style: TextStyle(
-                        fontSize: 18, 
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A1A1A),
-                      ),
+Widget _buildDonationPrompt(BuildContext context) {
+  return Container(
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      color: const Color(0xFFE6F0FF),
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Konten dua kolom (teks dan gambar)
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Kolom teks
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    "Sudah donor darah?",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1A1A1A),
                     ),
-                    SizedBox(height: 10),
-                    Text(
-                      "Yuk tukarkan reward",
-                      style: TextStyle(fontSize: 14, color: Color(0xFF333333)),
-                    ),
-                    Text(
-                      "Unggah bukti donor darah Anda sekarang dan dapatkan 10 koin yang bisa ditukar dengan reward menarik!",
-                      style: TextStyle(fontSize: 14, color: Color(0xFF333333)),
-                    ),
-                  ],
-                ),
-              ),
-              
-              // Right side - Blood donation image
-              Container(
-                width: 100,
-                height: 100,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/blood_donation.png'),
-                    fit: BoxFit.contain,
                   ),
+                  SizedBox(height: 8),
+                  Text(
+                    "Yuk tukarkan reward",
+                    style: TextStyle(fontSize: 14, color: Color(0xFF333333), fontWeight: FontWeight.bold,),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    "Unggah bukti donor darah Anda sekarang dan dapatkan 10 koin yang bisa ditukar dengan reward menarik!",
+                    style: TextStyle(fontSize: 14, color: Color(0xFF333333)),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            // Kolom gambar
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 12), // beri jarak atas dan bawah
+                child: Image.asset(
+                  'assets/images/homeDonorImage.png',
+                  height: 120, // kamu bisa atur ini ke 120 atau 140 kalau masih kecil
+                  fit: BoxFit.contain,
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          
-          // Full-width upload button
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF003C96),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+
+        // Tombol ada di bawah dua kolom
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF003C96),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
-              onPressed: _isUploading 
-                ? null // Disable button when uploading
+            ),
+            onPressed: _isUploading
+                ? null
                 : () {
-                    // Show the upload overlay when button is pressed
                     showUploadProofDonorOverlay(
-                      context, 
+                      context,
                       onImageSelected: _handleImageSelected,
                     );
                   },
-              child: _isUploading
+            child: _isUploading
                 ? const Center(
                     child: SizedBox(
                       width: 20,
@@ -241,16 +244,20 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
                       SizedBox(width: 8),
                       Text(
                         "Unggah Bukti Donor Darah",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
-            ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
+
+
+
 
   // Reorganized stats section with separate cards
   Widget _buildStatsSection() {

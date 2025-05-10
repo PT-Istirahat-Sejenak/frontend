@@ -101,18 +101,17 @@ class DonorLoginScreen extends StatelessWidget {
                             const SnackBar(content: Text("Email dan password harus diisi")),
                           );
                           return;
-                        }
-                        Navigator.pushReplacementNamed(context, AppRoutes.donorNav);
+                        }                        
                         
-                        // final isSuccess = await authProvider.login(email, password, context);
+                        final isSuccess = await authProvider.login(email, password, context);
 
-                        // if (isSuccess) {
-                        //   Navigator.pushReplacementNamed(context, AppRoutes.donorNav);
-                        // } else {
-                        //   ScaffoldMessenger.of(context).showSnackBar(
-                        //     const SnackBar(content: Text("Login gagal. Periksa kembali email dan password.")),
-                        //   );
-                        // }
+                        if (isSuccess) {
+                          Navigator.pushReplacementNamed(context, AppRoutes.donorNav);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Login gagal. Periksa kembali email dan password.")),
+                          );
+                        }
                       },
                     ),
               ),

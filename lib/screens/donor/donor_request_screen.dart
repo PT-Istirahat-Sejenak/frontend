@@ -8,6 +8,8 @@ class DonorRequestScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
         title: const Text(
           'Permintaan Donor Darah',
           style: TextStyle(

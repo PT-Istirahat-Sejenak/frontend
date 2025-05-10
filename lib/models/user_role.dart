@@ -1,24 +1,24 @@
 enum UserRole {
-  patient,
-  seeker,
+  pendonor,
+  pencari,
 }
 
 extension UserRoleExt on UserRole {
   String toJson() {
     switch (this) {
-      case UserRole.patient:
-        return 'donor';
-      case UserRole.seeker:
-        return 'seeker';
+      case UserRole.pendonor:
+        return 'pendonor';
+      case UserRole.pencari:
+        return 'pencari';
     }
   }
 
   static UserRole? fromString(String? role) {
     switch (role) {
-      case 'donor':
-        return UserRole.patient;
-      case 'seeker':
-        return UserRole.seeker;
+      case 'pendonor':
+        return UserRole.pendonor;
+      case 'pencari':
+        return UserRole.pencari;
       default:
         return null;
     }

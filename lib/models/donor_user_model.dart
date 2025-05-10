@@ -7,8 +7,8 @@ class DonorUserModel {
   final String? address;
   final String? phoneNumber;
   final String? gender;
-  final String? bloodType;
-  final String? rhesus;
+  final String? bloodType; // hanya untuk pendonor
+  final String? rhesus;    // hanya untuk pendonor
   final UserRole role;
   final String? profilePhoto;
   final String? dateOfBirth;
@@ -41,7 +41,7 @@ class DonorUserModel {
       gender: json['gender'],
       bloodType: json['blood_type'],
       rhesus: json['rhesus'],
-      role: UserRoleExt.fromString(json['role']) ?? UserRole.patient,
+      role: UserRoleExt.fromString(json['role']) ?? UserRole.pendonor,
       profilePhoto: json['profile_photo'],
       dateOfBirth: json['date_of_birth'],
       createdAt: json['created_at'] != null

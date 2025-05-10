@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:donora_dev/models/user_role.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -77,7 +78,8 @@ class _SeekerRegisterScreenState extends State<SeekerRegisterScreen> {
       address: _addressController.text,
       phoneNumber: _phoneController.text,
       password: _passwordController.text,
-      confirmPassword: _confirmPasswordController.text, // Match provider parameter
+      confirmPassword: _confirmPasswordController.text,
+      role: UserRole.pencari,
     );
 
     if (success) {
@@ -185,14 +187,14 @@ class _SeekerRegisterScreenState extends State<SeekerRegisterScreen> {
                               ListTile(
                                 title: const Text('Laki-laki'),
                                 onTap: () {
-                                  _genderController.text = 'Laki-laki';
+                                  _genderController.text = 'male';
                                   Navigator.pop(context);
                                 },
                               ),
                               ListTile(
                                 title: const Text('Perempuan'),
                                 onTap: () {
-                                  _genderController.text = 'Perempuan';
+                                  _genderController.text = 'female';
                                   Navigator.pop(context);
                                 },
                               ),

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_donor_service.dart';
@@ -12,20 +11,26 @@ class AuthDonorProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  //Provider for donor login
-  Future<bool> login(String email, String password, BuildContext context) async {
+  Future<bool> login(
+    String email,
+    String password,
+    BuildContext context,
+  ) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      final response = await _authService.login(email, password);
+      final response = await _authService.login(
+        email: email,
+        password: password,
+      );
 
       if (response['success']) {
         final userProvider = Provider.of<UserProvider>(context, listen: false);
         await userProvider.setUser(
-          email: email,
-          role: UserRole.patient,
+          role: UserRole.pendonor,
           token: response['token'],
+          userJson: response['user'],
         );
         return true;
       } else {
@@ -41,7 +46,7 @@ class AuthDonorProvider extends ChangeNotifier {
     }
   }
 
-  //Provider for donor registration
+  // Register untuk semua role
   Future<bool> register({
     required String name,
     required String dateOfBirth,
@@ -51,10 +56,10 @@ class AuthDonorProvider extends ChangeNotifier {
     required String phoneNumber,
     required String password,
     required String confirmPassword,
-    required String bloodType,
-    required String rhesus,
+    required UserRole role,
     File? profileImage,
-
+    String? bloodType,
+    String? rhesus,
   }) async {
     _isLoading = true;
     notifyListeners();
@@ -69,9 +74,10 @@ class AuthDonorProvider extends ChangeNotifier {
         phoneNumber: phoneNumber,
         password: password,
         confirmPassword: confirmPassword,
+        role: role,
+        profileImage: profileImage,
         bloodType: bloodType,
         rhesus: rhesus,
-        profileImage: profileImage,
       );
       return response['success'];
     } catch (e) {

@@ -1,4 +1,7 @@
+import 'package:donora_dev/providers/user_provider.dart';
+import 'package:donora_dev/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'seeker_profile_edit_screen.dart';
 import '../../widgets/logout_confirmation_dialog.dart';
 
@@ -100,6 +103,7 @@ class SeekerProfileScreen extends StatelessWidget {
             ),
             
             // Logout Button
+            // Logout Button
             Padding(
               padding: const EdgeInsets.all(20),
               child: Container(
@@ -112,13 +116,23 @@ class SeekerProfileScreen extends StatelessWidget {
                 ),
                 child: TextButton(
                   onPressed: () async {
-                    // Show logout confirmation dialog
                     final shouldLogout = await LogoutConfirmationDialog.show(context);
-                    
+
                     if (shouldLogout == true) {
-                      // Perform logout actions here
-                      // For example: clear user data, navigate to login screen, etc.
-                      debugPrint('User confirmed logout');
+                      // Logout user
+                      final userProvider = Provider.of<UserProvider>(context, listen: false);
+                      await userProvider.logout();
+
+                      // Arahkan ke halaman login dan hapus semua halaman sebelumnya
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        AppRoutes.seekerLogin,
+                        (route) => false,
+                      );
+
+                      // (Opsional) Snackbar konfirmasi
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Berhasil logout')),
+                      );
                     }
                   },
                   child: const Text(

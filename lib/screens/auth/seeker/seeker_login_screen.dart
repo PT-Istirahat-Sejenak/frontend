@@ -100,17 +100,16 @@ class SeekerLoginScreen extends StatelessWidget {
                               const SnackBar(content: Text("Email dan password harus diisi")),
                             );
                             return;
+                          }                          
+                          final success = await authProvider.login(email, password, context);
+                          if (success && context.mounted) {
+                            Navigator.pushReplacementNamed(
+                                context, AppRoutes.seekerNav);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("Failed to login")),
+                            );
                           }
-                          Navigator.pushReplacementNamed(context, AppRoutes.seekerNav);
-                          // final success = await authProvider.login(email, password);
-                          // if (success && context.mounted) {
-                          //   Navigator.pushReplacementNamed(
-                          //       context, AppRoutes.donorHome);
-                          // } else {
-                          //   ScaffoldMessenger.of(context).showSnackBar(
-                          //     const SnackBar(content: Text("Failed to login")),
-                          //   );
-                          // }
                         },
                       ),
               ),

@@ -1,3 +1,4 @@
+import 'package:donora_dev/models/user_role.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
@@ -39,7 +40,7 @@ class _DonorRegisterScreen2State extends State<DonorRegisterScreen2> {
   String? _rhesus;
 
   final List<String> _bloodTypes = ['A', 'B', 'AB', 'O'];
-  final List<String> _rhesusTypes = ['+', '-'];
+  final List<String> _rhesusTypes = ['positive', 'negative'];
 
   @override
   Widget build(BuildContext context) {
@@ -216,6 +217,7 @@ class _DonorRegisterScreen2State extends State<DonorRegisterScreen2> {
       phoneNumber: widget.phoneNumber,
       password: widget.password,
       confirmPassword: widget.password,
+      role: UserRole.pendonor,
       bloodType: _bloodType!,
       rhesus: _rhesus!,
       profileImage: widget.profileImage,

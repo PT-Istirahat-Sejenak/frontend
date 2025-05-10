@@ -11,7 +11,7 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // We'll use the user provider to check the current user's role
     final userProvider = Provider.of<UserProvider>(context);
-    final isSeeker = userProvider.role == UserRole.seeker;
+    final isSeeker = userProvider.role == UserRole.pencari;
 
     // Mock data for chat list - in a real app, fetch this from your database
     final List<Map<String, dynamic>> chatList = [
@@ -39,7 +39,12 @@ class ChatScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+          child: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Pesan',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -48,47 +53,52 @@ class ChatScreen extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
+          ),
+        ),
       ),
-      body: ListView.builder(
+      body: Padding(
+      padding: const EdgeInsets.fromLTRB(20, 5, 20, 20),
+      child: ListView.builder(
         itemCount: chatList.length,
         itemBuilder: (context, index) {
-          final chat = chatList[index];
-          return ListTile(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatDetailScreen(
-                    name: chat['name'],
-                    imageUrl: chat['imageUrl'],
-                    isDonor: chat['isDonor'],
-                  ),
-                ),
-              );
-            },
-            leading: CircleAvatar(
-              backgroundImage: AssetImage(chat['imageUrl']),
-              radius: 20,
+        final chat = chatList[index];
+        return ListTile(
+          onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+            builder: (context) => ChatDetailScreen(
+              name: chat['name'],
+              imageUrl: chat['imageUrl'],
+              isDonor: chat['isDonor'],
             ),
-            title: Text(
-              chat['name'],
-              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            subtitle: Text(
-              chat['message'],
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            trailing: Text(
-              chat['time'],
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 12,
-              ),
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           );
+          },
+          leading: CircleAvatar(
+          backgroundImage: AssetImage(chat['imageUrl']),
+          radius: 20,
+          ),
+          title: Text(
+          chat['name'],
+          style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(
+          chat['message'],
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          ),
+          trailing: Text(
+          chat['time'],
+          style: const TextStyle(
+            color: Colors.grey,
+            fontSize: 12,
+          ),
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        );
         },
+      ),
       ),
       backgroundColor: Colors.white,
     );

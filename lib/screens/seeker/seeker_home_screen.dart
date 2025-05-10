@@ -244,7 +244,7 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
                 height: 100,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/blood_donation.png'),
+                    image: AssetImage('assets/images/homeSeekerImage.png'),
                     fit: BoxFit.contain,
                   ),
                 ),

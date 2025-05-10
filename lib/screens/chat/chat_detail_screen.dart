@@ -124,7 +124,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     if (_messageController.text.trim().isEmpty) return;
 
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final isUserDonor = userProvider.role == UserRole.patient;
+    final isUserDonor = userProvider.role == UserRole.pendonor;
     
     // If widget.isDonor is true, then the chat partner is a donor
     // The message is FROM donor if the user is a donor
@@ -148,7 +148,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
-    final isUserDonor = userProvider.role == UserRole.patient;
+    final isUserDonor = userProvider.role == UserRole.pendonor;
     
     // Debug print current state
     print("Building chat detail screen with ${_messages.length} messages");

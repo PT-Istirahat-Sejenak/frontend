@@ -21,7 +21,7 @@ class _SeekerNavState extends State<SeekerNav> {
 
   final List<Widget> _pages = [
     SeekerHomeScreen(),
-    EducationScreen(userRole: UserRole.seeker),
+    EducationScreen(userRole: UserRole.pencari),
     SeekerSearchDonorScreen(),
     ChatScreen(),
     SeekerProfileScreen(),    

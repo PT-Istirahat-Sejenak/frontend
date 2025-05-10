@@ -1,12 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import '../models/user_role.dart';
 
 class AuthDonorService {
   final String baseUrl = 'https://gsc.fahrulhehehe.my.id/api/auth';
 
-  //Fetch API Login Donor
-  Future<Map<String, dynamic>> login(String email, String password) async {
+  Future<Map<String, dynamic>> login({
+    required String email,
+    required String password,
+  }) async {
+    
     final url = Uri.parse('$baseUrl/login');
     final response = await http.post(
       url,
@@ -14,7 +18,7 @@ class AuthDonorService {
       body: jsonEncode({
         'email': email,
         'password': password,
-        'role': 'patient',
+        'role': 'pendonor',
       }),
     );
 
@@ -33,20 +37,19 @@ class AuthDonorService {
     }
   }
 
-  //Fetch API Register Donor
   Future<Map<String, dynamic>> register({
     required String name,
     required String dateOfBirth,
     required String email,
-    required String bloodType,
-    required String rhesus,
     required String gender,
     required String address,
     required String phoneNumber,
     required String password,
     required String confirmPassword,
+    required UserRole role,
     File? profileImage,
-    
+    String? bloodType,
+    String? rhesus,
   }) async {
     final url = Uri.parse('$baseUrl/register');
 
@@ -59,14 +62,15 @@ class AuthDonorService {
       ..fields['phone_number'] = phoneNumber
       ..fields['password'] = password
       ..fields['password_confirmation'] = confirmPassword
-      ..fields['blood_type'] = bloodType
-      ..fields['rhesus'] = rhesus;
-      // ..fields['role'] = 'patient';
+      ..fields['role'] = role.toJson();
+
+    if (role == UserRole.pendonor) {
+      request.fields['blood_type'] = bloodType ?? '';
+      request.fields['rhesus'] = rhesus ?? '';
+    }
 
     if (profileImage != null) {
-      request.files.add(
-        await http.MultipartFile.fromPath('profile_photo', profileImage.path),
-      );
+      request.files.add(await http.MultipartFile.fromPath('profile_photo', profileImage.path));
     }
 
     final streamedResponse = await request.send();

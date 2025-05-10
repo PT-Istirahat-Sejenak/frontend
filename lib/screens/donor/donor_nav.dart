@@ -26,7 +26,7 @@ class _DonorNavState extends State<DonorNav> {
 
   final List<Widget> _pages = [
     DonorHomeScreen(),
-    EducationScreen(userRole: UserRole.patient),
+    EducationScreen(userRole: UserRole.pendonor),
     DonorRequestScreen(),
     ChatScreen(),
     DonorProfileScreen(),
@@ -49,7 +49,7 @@ class _DonorNavState extends State<DonorNav> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Container(
-            height: 75, // lebih optimal
+            height: 75,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(15),
@@ -71,9 +71,9 @@ class _DonorNavState extends State<DonorNav> {
                 elevation: 0,
                 selectedItemColor: selectedColor,
                 unselectedItemColor: unselectedColor,
-                selectedLabelStyle: const TextStyle(height: 1.5), // height kecilin
+                selectedLabelStyle: const TextStyle(height: 1.5),
                 unselectedLabelStyle: const TextStyle(height: 1.5),
-                iconSize: 24, // jangan terlalu gede
+                iconSize: 24,
                 items: [
                   BottomNavigationBarItem(
                     icon: SvgPicture.asset(

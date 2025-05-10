@@ -80,14 +80,14 @@ class MyApp extends StatelessWidget {
               // Handle education routes
               if ((settings.name == AppRoutes.donorEducation || 
                    settings.name == AppRoutes.donorEducationDetail) && 
-                  userProvider.role == UserRole.patient) {
-                return EducationRoutes.generateRoute(settings, UserRole.patient);
+                  userProvider.role == UserRole.pendonor) {
+                return EducationRoutes.generateRoute(settings, UserRole.pendonor);
               } 
               
               if ((settings.name == AppRoutes.seekerEducation || 
                    settings.name == AppRoutes.seekerEducationDetail) && 
-                  userProvider.role == UserRole.seeker) {
-                return EducationRoutes.generateRoute(settings, UserRole.seeker);
+                  userProvider.role == UserRole.pencari) {
+                return EducationRoutes.generateRoute(settings, UserRole.pencari);
               }
               
               // Handle regular routes
@@ -165,7 +165,7 @@ class MyApp extends StatelessWidget {
                   return MaterialPageRoute(
                     builder: (_) => EducationDetailScreen(
                       article: article,
-                      userRole: UserRole.patient,
+                      userRole: UserRole.pendonor,
                     ),
                   );
 
@@ -174,7 +174,7 @@ class MyApp extends StatelessWidget {
                   return MaterialPageRoute(
                     builder: (_) => EducationDetailScreen(
                       article: article,
-                      userRole: UserRole.seeker,
+                      userRole: UserRole.pencari,
                     ),
                   );
                 default:

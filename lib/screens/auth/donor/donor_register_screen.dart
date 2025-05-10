@@ -165,14 +165,14 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
                               ListTile(
                                 title: const Text('Laki-laki'),
                                 onTap: () {
-                                  _genderController.text = 'Laki-laki';
+                                  _genderController.text = 'male';
                                   Navigator.pop(context);
                                 },
                               ),
                               ListTile(
                                 title: const Text('Perempuan'),
                                 onTap: () {
-                                  _genderController.text = 'Perempuan';
+                                  _genderController.text = 'female';
                                   Navigator.pop(context);
                                 },
                               ),

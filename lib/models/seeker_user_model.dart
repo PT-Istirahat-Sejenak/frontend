@@ -35,16 +35,17 @@ class SeekerUserModel {
       address: json['address'],
       phoneNumber: json['phone_number'],
       gender: json['gender'],
-      role: UserRoleExt.fromString(json['role']) ?? UserRole.seeker,
+      role: UserRoleExt.fromString(json['role']) ?? UserRole.pencari,
       profilePhoto: json['profile_photo'],
       dateOfBirth: json['date_of_birth'],
-      createdAt: json['created_at'] != null
-          ? DateTime.tryParse(json['created_at'])
-          : null,
-      updatedAt: json['updated_at'] != null
-          ? DateTime.tryParse(json['updated_at'])
-          : null,
+      createdAt: _parseDate(json['created_at']),
+      updatedAt: _parseDate(json['updated_at']),
     );
+  }
+
+  static DateTime? _parseDate(dynamic value) {
+    if (value == null) return null;
+    return DateTime.tryParse(value.toString());
   }
 
   Map<String, dynamic> toJson() {
