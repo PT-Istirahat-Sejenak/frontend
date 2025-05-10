@@ -58,7 +58,7 @@ class AuthSeekerProvider extends ChangeNotifier {
     required String password,
     required String confirmPassword,
     required UserRole role,
-    File? profileImage,
+    File? profilePhoto,
   }) async {
     _isLoading = true;
     notifyListeners();
@@ -74,7 +74,7 @@ class AuthSeekerProvider extends ChangeNotifier {
         password: password,
         confirmPassword: confirmPassword,
         role: role,
-        profileImage: profileImage,
+        profilePhoto: profilePhoto,
       );
       return response['success'];
     } catch (e) {

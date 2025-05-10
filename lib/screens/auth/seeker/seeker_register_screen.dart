@@ -83,10 +83,10 @@ class _SeekerRegisterScreenState extends State<SeekerRegisterScreen> {
     );
 
     if (success) {
-      // Navigate to seeker home page
+      // Navigate to seeker nav page
       Navigator.pushNamedAndRemoveUntil(
         context, 
-        AppRoutes.seekerHome, 
+        AppRoutes.seekerNav,
         (route) => false,
       );
     } else {

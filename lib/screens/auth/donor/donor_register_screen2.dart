@@ -220,7 +220,7 @@ class _DonorRegisterScreen2State extends State<DonorRegisterScreen2> {
       role: UserRole.pendonor,
       bloodType: _bloodType!,
       rhesus: _rhesus!,
-      profileImage: widget.profileImage,
+      profilePhoto: widget.profileImage,
     );
 
     if (success) {

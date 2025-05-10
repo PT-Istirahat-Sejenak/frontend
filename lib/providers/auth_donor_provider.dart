@@ -57,7 +57,7 @@ class AuthDonorProvider extends ChangeNotifier {
     required String password,
     required String confirmPassword,
     required UserRole role,
-    File? profileImage,
+    File? profilePhoto,
     String? bloodType,
     String? rhesus,
   }) async {
@@ -75,7 +75,7 @@ class AuthDonorProvider extends ChangeNotifier {
         password: password,
         confirmPassword: confirmPassword,
         role: role,
-        profileImage: profileImage,
+        profilePhoto: profilePhoto,
         bloodType: bloodType,
         rhesus: rhesus,
       );
