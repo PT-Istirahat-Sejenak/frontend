@@ -38,6 +38,7 @@ import 'screens/donor/donor_nav.dart';
 import 'screens/donor/donor_home_screen.dart';
 import 'screens/donor/donor_notification_screen.dart';
 import 'screens/donor/donor_history_screen.dart';
+import 'screens/donor/donor_reward_screen.dart';
 
 //seeker auth
 import 'screens/auth/seeker/seeker_login_screen.dart';
@@ -97,6 +98,8 @@ class MyApp extends StatelessWidget {
                   return MaterialPageRoute(builder: (_) => const OnboardingScreen());
                 case AppRoutes.selectRole:
                   return MaterialPageRoute(builder: (_) => const RoleSelectionScreen());
+                
+                // Handle Donor Auth Routes
                 case AppRoutes.donorLogin:
                   return MaterialPageRoute(builder: (_) => DonorLoginScreen());
                 case AppRoutes.donorRegister:
@@ -119,6 +122,8 @@ class MyApp extends StatelessWidget {
                   return MaterialPageRoute(builder: (_) => DonorVerificationCodeScreen(donorEmail: ''));
                 case AppRoutes.donorNewPassword:
                   return MaterialPageRoute(builder: (_) => const DonorNewPasswordScreen());
+
+                // Handle Donor Screen Routes
                 case AppRoutes.donorNav:
                   return MaterialPageRoute(builder: (_) => const DonorNav());
                 case AppRoutes.donorHome:
@@ -127,6 +132,10 @@ class MyApp extends StatelessWidget {
                   return MaterialPageRoute(builder: (_) => const DonorNotificationScreen());
                 case AppRoutes.donorHistory:
                   return MaterialPageRoute(builder: (_) => const DonorHistoryScreen());
+                case AppRoutes.donorReward:
+                  return MaterialPageRoute(builder: (_) => const DonorRewardScreen());        
+
+                // Handle Seeker Auth Routes
                 case AppRoutes.seekerLogin:
                   return MaterialPageRoute(builder: (_) => SeekerLoginScreen());
                 case AppRoutes.seekerRegister:
@@ -137,6 +146,8 @@ class MyApp extends StatelessWidget {
                   return MaterialPageRoute(builder: (_) => SeekerVerificationCodeScreen(seekerEmail: ''));
                 case AppRoutes.seekerNewPassword:
                   return MaterialPageRoute(builder: (_) => const SeekerNewPasswordScreen());
+                
+                // Handle Seeker Screen Routes
                 case AppRoutes.seekerNav:
                   return MaterialPageRoute(builder: (_) => const SeekerNav());
                 case AppRoutes.seekerHome:                  

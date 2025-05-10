@@ -1,3 +1,4 @@
+import 'package:donora_dev/screens/donor/donor_nav.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import '../../routes/app_routes.dart';
@@ -389,64 +390,71 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
   }
 
   Widget _buildRewardCard() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Reward Saya",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              InkWell(
-                onTap: () {},
-                child: const Icon(Icons.arrow_forward, size: 20),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.amber.withOpacity(0.2),
-                  shape: BoxShape.circle,
+    return InkWell(
+      onTap: () {  
+        Navigator.pushNamed(context, AppRoutes.donorReward);
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Reward Saya",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                child: const Icon(Icons.card_giftcard, color: Colors.amber, size: 24),
-              ),
-              const SizedBox(width: 12),
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "10 Koin",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, AppRoutes.donorReward);
+                  },
+                  child: const Icon(Icons.arrow_forward, size: 20),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withOpacity(0.2),
+                    shape: BoxShape.circle,
                   ),
-                  Text(
-                    "Tersedia",
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
+                  child: const Icon(Icons.card_giftcard, color: Colors.amber, size: 24),
+                ),
+                const SizedBox(width: 12),
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "10 Koin",
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "Tersedia",
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -463,7 +471,14 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const DonorNav(initialIndex: 1),
+                  ),
+                );
+              },
               child: const Row(
                 children: [
                   Text("Selengkapnya"),

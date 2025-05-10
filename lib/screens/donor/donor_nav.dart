@@ -3,24 +3,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'donor_home_screen.dart';
 import '../education/education_screen.dart';
-import 'donor_reward_screen.dart';
 import '../chat/chat_screen.dart';
 import 'donor_profile_screen.dart';
+import 'donor_request_screen.dart';
 
 class DonorNav extends StatefulWidget {
-  const DonorNav({super.key});
+  final int initialIndex;
+  const DonorNav({super.key, this.initialIndex = 0});
 
   @override
   State<DonorNav> createState() => _DonorNavState();
 }
 
 class _DonorNavState extends State<DonorNav> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex;
+  }
 
   final List<Widget> _pages = [
     DonorHomeScreen(),
     EducationScreen(userRole: UserRole.patient),
-    DonorRewardScreen(),
+    DonorRequestScreen(),
     ChatScreen(),
     DonorProfileScreen(),
   ];

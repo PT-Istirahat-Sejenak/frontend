@@ -189,7 +189,7 @@ class _EducationScreenState extends State<EducationScreen> {
             ),
             const SizedBox(height: 5),
             Text(
-              'Chatbot',
+              'Tanya Dora',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 14,
