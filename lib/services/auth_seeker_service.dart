@@ -50,6 +50,7 @@ class AuthSeekerService {
     required String password,
     required String confirmPassword,
     required UserRole role,
+    required String fcmToken,
     File? profilePhoto,
   }) async {
     final url = Uri.parse('$baseUrl/register');
@@ -63,7 +64,8 @@ class AuthSeekerService {
     ..fields['phone_number'] = phoneNumber
     ..fields['password'] = password
     ..fields['password_confirmation'] = confirmPassword
-    ..fields['role'] = role.toJson();
+    ..fields['role'] = role.toJson()
+    ..fields['fcm_token'] = fcmToken;
 
   if (profilePhoto != null) {
     final mimeType = lookupMimeType(profilePhoto.path);
@@ -90,7 +92,7 @@ class AuthSeekerService {
         'user': data['user'],
       };
     } else {
-      debugPrint('Register error: ${response.body}');
+      debugPrint('Register errorr : ${response.body}');
       return {
         'success': false,
         'message': jsonDecode(response.body)['message'] ?? 'Register gagal',

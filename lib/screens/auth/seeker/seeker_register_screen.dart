@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:donora_dev/models/user_role.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -68,6 +69,7 @@ class _SeekerRegisterScreenState extends State<SeekerRegisterScreen> {
 
     // Use the provider to register the seeker
     final authProvider = Provider.of<AuthSeekerProvider>(context, listen: false);
+    String? token = await FirebaseMessaging.instance.getToken();
     
     // Register the seeker
     final bool success = await authProvider.register(
@@ -80,6 +82,7 @@ class _SeekerRegisterScreenState extends State<SeekerRegisterScreen> {
       password: _passwordController.text,
       confirmPassword: _confirmPasswordController.text,
       role: UserRole.pencari,
+      fcmToken: token!,
     );
 
     if (success) {

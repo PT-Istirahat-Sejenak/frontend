@@ -57,6 +57,7 @@ class AuthDonorProvider extends ChangeNotifier {
     required String password,
     required String confirmPassword,
     required UserRole role,
+    required String fcmToken,
     File? profilePhoto,
     String? bloodType,
     String? rhesus,
@@ -78,6 +79,7 @@ class AuthDonorProvider extends ChangeNotifier {
         profilePhoto: profilePhoto,
         bloodType: bloodType,
         rhesus: rhesus,
+        fcmToken: fcmToken
       );
       return response['success'];
     } catch (e) {

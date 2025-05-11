@@ -1,6 +1,11 @@
+import 'package:donora_dev/providers/seeker_form_provider.dart';
+import 'package:donora_dev/providers/user_provider.dart';
+import 'package:donora_dev/services/seeker_form_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import '../../routes/app_routes.dart';
+import '../../services/auth_donor_service.dart';
 
 class SeekerSearchDonorScreen extends StatefulWidget {
   const SeekerSearchDonorScreen({super.key});
@@ -19,7 +24,7 @@ class _SeekerSearchDonorScreenState extends State<SeekerSearchDonorScreen> {
   String? _selectedUrgency;
 
   final List<String> _bloodTypes = ['A', 'B', 'AB', 'O'];
-  final List<String> _rhesusTypes = ['+', '-'];
+  final List<String> _rhesusTypes = ['positive', 'negative'];
   final List<String> _urgencyLevels = ['Biasa', 'Penting', 'Mendesak'];
 
   @override
@@ -238,16 +243,56 @@ class _SeekerSearchDonorScreenState extends State<SeekerSearchDonorScreen> {
                       width: 120,
                       height: 44,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          final name = _nameController.text;
+                          final location = _locationController.text;
+                          final quantity = _quantityController.text;
+                          final bloodType = _selectedBloodType;
+                          final rhesus = _selectedRhesus;
+                          final urgency = _selectedUrgency;
+                          final body = '$name sedang butuh donor darah $bloodType$rhesus sebanyak $quantity kantong di $location. Kondisinya sekarang $urgency.';
+
+                          final userProvider = Provider.of<UserProvider>(context, listen: false);
+                          final seeker = userProvider.seeker;
+                          if (seeker == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Data pengguna belum lengkap. Harap lengkapi profil terlebih dahulu.'),
+                                duration: Duration(seconds: 2),
+                              ),
+                          );
+                          return;
+                          }
+
+                          final result = await SeekerFormService().createSeeker(userId: seeker.id, bloodType: '$bloodType', title: 'Permintaan donor darah baru!', body: body);
+
+                          final isSuccess = result['success'] == true;
+
+                          if (isSuccess) {
+                            // Show success message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Permintaan donor darah berhasil dikirim!'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
                           // Close the popup
                           Navigator.of(dialogContext).pop();
-                          
-                          // Navigate back to the home screen with search flag
+
                           Navigator.pushNamed(
                             context,
-                            AppRoutes.seekerHome, // Make sure this route name matches your route definition                            
+                            AppRoutes.seekerNav, // Make sure this route name matches your route definition                            
                             arguments: {'isSearching': true},
                           );
+                          } else {
+                            // Show error message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Gagal mengirim permintaan donor darah.'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }                        
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFB91C1C),

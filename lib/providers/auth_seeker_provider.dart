@@ -58,6 +58,7 @@ class AuthSeekerProvider extends ChangeNotifier {
     required String password,
     required String confirmPassword,
     required UserRole role,
+    required String fcmToken,
     File? profilePhoto,
   }) async {
     _isLoading = true;
@@ -75,6 +76,7 @@ class AuthSeekerProvider extends ChangeNotifier {
         confirmPassword: confirmPassword,
         role: role,
         profilePhoto: profilePhoto,
+        fcmToken: fcmToken,
       );
       return response['success'];
     } catch (e) {

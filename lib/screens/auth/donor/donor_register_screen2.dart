@@ -1,4 +1,5 @@
 import 'package:donora_dev/models/user_role.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
@@ -6,6 +7,8 @@ import '../../../widgets/primary_button.dart';
 import '../../../widgets/back_button.dart';
 import '../../../providers/auth_donor_provider.dart';
 import '../../../routes/app_routes.dart';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class DonorRegisterScreen2 extends StatefulWidget {
   final String name;
@@ -200,6 +203,8 @@ class _DonorRegisterScreen2State extends State<DonorRegisterScreen2> {
 
   void _handleSubmit() async {
     final authProvider = Provider.of<AuthDonorProvider>(context, listen: false);
+    String? token = await FirebaseMessaging.instance.getToken();
+    print(token! + ' token');
 
     if (_bloodType == null || _rhesus == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -221,6 +226,7 @@ class _DonorRegisterScreen2State extends State<DonorRegisterScreen2> {
       bloodType: _bloodType!,
       rhesus: _rhesus!,
       profilePhoto: widget.profileImage,
+      fcmToken: token!,
     );
 
     if (success) {

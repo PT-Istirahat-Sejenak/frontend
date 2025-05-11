@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:donora_dev/providers/auth_donor_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import '../models/user_role.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
@@ -50,6 +52,7 @@ Future<Map<String, dynamic>> register({
   required String password,
   required String confirmPassword,
   required UserRole role,
+  required String fcmToken,
   File? profilePhoto,
   String? bloodType,
   String? rhesus,
@@ -65,7 +68,9 @@ Future<Map<String, dynamic>> register({
     ..fields['phone_number'] = phoneNumber
     ..fields['password'] = password
     ..fields['password_confirmation'] = confirmPassword
-    ..fields['role'] = role.toJson();
+    ..fields['role'] = role.toJson()
+    ..fields['fcm_token'] = fcmToken;
+
 
   if (role == UserRole.pendonor) {
     request.fields['blood_type'] = bloodType ?? '';
@@ -89,12 +94,16 @@ Future<Map<String, dynamic>> register({
   final streamedResponse = await request.send();
   final response = await http.Response.fromStream(streamedResponse);
 
+  print(fcmToken + ' token di service ya');
   if (response.statusCode == 200 || response.statusCode == 201) {
     final data = jsonDecode(response.body);
+    final user = data['user'];
+    final token = data['token'];
+
     return {
       'success': true,
-      'token': data['token'],
-      'user': data['user'],
+      'token': token,
+      'user': user,
     };
   } else {
     debugPrint('Register error: ${response.body}');

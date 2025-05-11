@@ -12,6 +12,15 @@ class UserProvider with ChangeNotifier {
   DonorUserModel? _donor;
   SeekerUserModel? _seeker;
 
+  String? get userId {
+    if (_role == UserRole.pendonor) {
+      return _donor?.id.toString();
+    } else if (_role == UserRole.pencari) {
+      return _seeker?.id.toString();
+    }
+    return null;
+  }
+
   String? get token => _token;
   UserRole? get role => _role;
   bool get isLoggedIn => _isLoggedIn;

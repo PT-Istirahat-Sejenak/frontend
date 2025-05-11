@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import '../../routes/app_routes.dart';
 import 'upload_proof_donor_overlay.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import '../../widgets/notification_card.dart';
 
 class DonorHomeScreen extends StatefulWidget {
   const DonorHomeScreen({super.key});
@@ -12,6 +14,37 @@ class DonorHomeScreen extends StatefulWidget {
 }
 
 class _DonorHomeScreenState extends State<DonorHomeScreen> {
+  // Initialize Firebase Messaging
+  late FirebaseMessaging _firebaseMessaging;
+  late String _fcmMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+
+    _firebaseMessaging = FirebaseMessaging.instance;
+
+    _firebaseMessaging.getToken().then((token) {
+      // print("FCM Token: $token");
+    });
+
+    // Menangani pesan yang datang saat aplikasi terbuka
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("Pesan diterima: ${message.notification?.title} | ${message.notification?.body}");
+
+    // Memperbarui message dan menampilkan notifikasi
+      setState(() {
+        _fcmMessage = message.notification?.body ?? 'Tidak ada pesan';
+      });
+    });
+
+    // Menangani pesan saat aplikasi di latar belakang atau tertutup
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('Aplikasi dibuka dari notifikasi: ${message.notification?.title}');
+    });
+
+    
+  }
 
   File? _selectedImage;
   bool _isUploading = false;
@@ -19,8 +52,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
   void _handleImageSelected(File imageFile) {
     setState(() {
       _selectedImage = imageFile;
-      // Here you would normally upload the image to your backend
-      // For this example, we'll just simulate it with a delay
+      //upload the image
       _simulateUpload();
     });
   }
@@ -63,6 +95,19 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
               children: [
                 _buildWelcomeSection(context),
                 const SizedBox(height: 16),
+                // Display the FCM message if available
+                if (_fcmMessage.isNotEmpty)
+                  NotificationCard(
+                    title: "Notifikasi Baru",
+                    message: _fcmMessage,
+                    actionText: "Lihat detail",
+                    icon: Icons.thumbs_up_down,
+                    color: const Color(0xFFB00020),
+                    textColor: Colors.white,
+                    onActionPressed: () { //arahiin ke chat kan
+                      print('Notifikasi ditekan');                      
+                    },
+                  ),
                 _buildDonationPrompt(context),
                 const SizedBox(height: 20),
                 _buildStatsSection(),

@@ -1,3 +1,6 @@
+import 'package:donora_dev/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -53,8 +56,20 @@ import 'screens/seeker/seeker_home_screen.dart';
 import 'screens/seeker/seeker_search_donor_screen.dart';
 import 'screens/seeker/seeker_notification_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(const MyApp());
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Handle background messages here
+  print("Handling a background message: ${message.messageId}");
 }
 
 class MyApp extends StatelessWidget {

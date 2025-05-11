@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../services/chatbot_service.dart';
+import '../../providers/user_provider.dart';
 
 class ChatboxScreen extends StatefulWidget {
   const ChatboxScreen({super.key});
@@ -15,17 +19,9 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
       message: "Hai! Saya chatbot Edukasi Donor Darah. Ada yang bisa saya bantu?",
       timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
     ),
-    ChatMessage(
-      isBot: false,
-      message: "Apakah boleh donor darah ketika sakit?",
-      timestamp: DateTime.now().subtract(const Duration(minutes: 4)),
-    ),
-    ChatMessage(
-      isBot: true,
-      message: "Tidak disarankan.\nJika sedang sakit (demam, flu, infeksi, dll), sebaiknya tunda donor darah sampai benar-benar sehat. Ini untuk menjaga kesehatan Anda dan keamanan darah yang didonorkan.",
-      timestamp: DateTime.now().subtract(const Duration(minutes: 3)),
-    ),
   ];
+
+  final ChatbotService _chatbotService = ChatbotService();
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +91,7 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
             ),
           ),
           const SizedBox(width: 8),
-          if (!message.isBot) const SizedBox(width: 32), // Space where avatar would be
+          if (!message.isBot) const SizedBox(width: 32),
         ],
       ),
     );
@@ -129,7 +125,7 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(
-          top: BorderSide(
+          top: BorderSide( 
             color: Colors.grey.shade300,
             width: 1,
           ),
@@ -166,17 +162,47 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
               color: Colors.grey,
               size: 24,
             ),
-            onPressed: () {
-              if (_messageController.text.isNotEmpty) {
+            onPressed: () async {
+              final userMessage = _messageController.text.trim();
+              if (userMessage.isEmpty) return;
+
+              setState(() {
+                _messages.add(ChatMessage(
+                  isBot: false,
+                  message: userMessage,
+                  timestamp: DateTime.now(),
+                ));
+                _messageController.clear();
+              });
+
+              try {
+                final userProvider = Provider.of<UserProvider>(context, listen: false);
+                final userIdStr = userProvider.userId ?? '0';
+                final userId = int.tryParse(userIdStr) ?? 0;
+
+                final response = await _chatbotService.sendMessage(
+                  message: userMessage,
+                  userId: userId,
+                );
+
+                final botReply = response['success']
+                    ? response['response']['reply'] ?? 'Bot tidak merespons.'
+                    : 'Error: ${response['message']}';
+
                 setState(() {
-                  _messages.add(
-                    ChatMessage(
-                      isBot: false,
-                      message: _messageController.text,
-                      timestamp: DateTime.now(),
-                    ),
-                  );
-                  _messageController.clear();
+                  _messages.add(ChatMessage(
+                    isBot: true,
+                    message: botReply,
+                    timestamp: DateTime.now(),
+                  ));
+                });
+              } catch (e) {
+                setState(() {
+                  _messages.add(ChatMessage(
+                    isBot: true,
+                    message: 'Gagal mengirim pesan. Coba lagi.',
+                    timestamp: DateTime.now(),
+                  ));
                 });
               }
             },
