@@ -147,17 +147,17 @@ class _EducationScreenState extends State<EducationScreen> {
               width: 60,
               height: 60,
               decoration: ShapeDecoration(
-                color: Colors.white, // White background matching page color
+                color: Colors.white,
                 shape: OvalBorder(
                   side: BorderSide(
-                    width: 2,
-                    color: Color(0xFFAAAAAA), // Lighter gray border
+                    width: 4,
+                    color: Color(0xFF808080),
                   ),
                 ),
                 shadows: [
                   BoxShadow(
                     color: Color(0x3F000000),
-                    blurRadius: 4,
+                    blurRadius: 5,
                     offset: Offset(0, 2),
                     spreadRadius: 0,
                   )
@@ -165,15 +165,14 @@ class _EducationScreenState extends State<EducationScreen> {
               ),
               child: Center(
                 child: Container(
-                  width: 40,
-                  height: 40,
+                  width: 80,
+                  height: 80,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
-                        blurRadius: 3,
-                        offset: Offset(0, 2),
+                        color: Colors.grey.shade50,
+                        blurRadius: 1,                    
                         spreadRadius: 0,
                       )
                     ],
@@ -193,7 +192,7 @@ class _EducationScreenState extends State<EducationScreen> {
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 14,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],
@@ -228,17 +227,17 @@ class _EducationScreenState extends State<EducationScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.red : Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          // color: isSelected ? Color(0xFFC30010) : Colors.white,
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? Colors.red : Colors.grey,
-            width: 1,
+            color: isSelected ? Color(0xFFC30010) : Colors.grey,
+            width: 2.5,
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : Colors.grey,
+            color: isSelected ? Color(0xFFC30010) : Colors.grey,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),
@@ -312,7 +311,6 @@ class _EducationScreenState extends State<EducationScreen> {
         arguments: article,
       );
     } else {
-      // Assuming you'll create a seeker education route in the future
       Navigator.pushNamed(
         context, 
         AppRoutes.seekerEducationDetail,  

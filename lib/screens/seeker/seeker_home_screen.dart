@@ -220,36 +220,37 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
                     Text(
-                      "Sudah donor darah?",
+                      "Butuh donor darah segera?",
                       style: TextStyle(
                         fontSize: 18, 
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF1A1A1A),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 5),
                     Text(
-                      "Yuk tukarkan reward",
-                      style: TextStyle(fontSize: 14, color: Color(0xFF333333)),
+                      "Cari pendonor terdekat dengan cepat.",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF333333),
+                      ),
                     ),
+                    SizedBox(height: 5),
                     Text(
-                      "Unggah bukti donor darah Anda sekarang dan dapatkan 10 koin yang bisa ditukar dengan reward menarik!",
+                      "Klik tombol di bawah ini untuk mulai mencari pendonor sekarang juga!",
                       style: TextStyle(fontSize: 14, color: Color(0xFF333333)),
                     ),
                   ],
                 ),
               ),
               
-              // Right side - Blood donation image
-              Container(
+              // Right side - image
+              Image.asset(
+                'assets/images/homeSeekerImage.png',
                 width: 100,
                 height: 100,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/homeSeekerImage.png'),
-                    fit: BoxFit.contain,
-                  ),
-                ),
+                fit: BoxFit.contain,
               ),
             ],
           ),
@@ -262,9 +263,9 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFB91C1C),
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
               onPressed:() {
@@ -282,12 +283,15 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
                     'assets/icons/search-icon.svg',
                     width: 24,
                     height: 24,
-                    color: Colors.white,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
                   ),
-                  const SizedBox(width: 15),
+                  const SizedBox(width: 10),
                   const Text(
-                    "Cari Donor Darah",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    "Cari Pendonor Sekarang",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -307,14 +311,17 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
           children: [
             const Text(
               "Edukasi",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             TextButton(
               onPressed: () {},
               child: const Row(
                 children: [
-                  Text("Selengkapnya"),
-                  Icon(Icons.chevron_right, size: 18),
+                  Text(
+                    "Selengkapnya",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  Icon(Icons.chevron_right, size: 18, color: Colors.black,),
                 ],
               ),
             ),

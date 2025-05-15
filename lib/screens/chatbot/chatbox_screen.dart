@@ -43,9 +43,9 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        backgroundColor: Colors.grey.shade50,
+        backgroundColor: Colors.grey.shade100,
         elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.only(left: 30),

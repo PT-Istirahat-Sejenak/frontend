@@ -11,7 +11,7 @@ class DonorProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.grey.shade100,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(0),
         child: AppBar(
@@ -25,8 +25,8 @@ class DonorProfileScreen extends StatelessWidget {
             // Profile Header
             Container(
               width: double.infinity,
-              height: 250,
-              padding: const EdgeInsets.all(20),
+              height: 280,
+              padding: const EdgeInsets.all(30),
               decoration: const BoxDecoration(
                 color: Color(0xFFC30010),
                 borderRadius: BorderRadius.only(
@@ -36,15 +36,18 @@ class DonorProfileScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  const Text(
-                    'Profil Anda',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: const Text(
+                      'Profil Anda',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 40),
                   Container(
                     width: 80,
                     height: 80,
@@ -86,30 +89,30 @@ class DonorProfileScreen extends StatelessWidget {
             ProfileMenuItem(
               title: 'Lupa Kata Sandi',
               onTap: () {
-                // Navigate to password reset screen
+                Navigator.pushReplacementNamed(context, AppRoutes.donorForgetPassword);
               },
             ),
             ProfileMenuItem(
               title: 'Pengaturan',
               onTap: () {
-                // Navigate to settings screen
+                
               },
             ),
             ProfileMenuItem(
               title: 'Bahasa',
               onTap: () {
-                // Navigate to language settings
+                
               },
             ),
             
             // Logout Button
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(30),
               child: Container(
                 width: double.infinity,
                 height: 50,
                 decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFC30010)),
+                  border: Border.all(color: const Color(0xFFC30010), width: 2.5),
                   borderRadius: BorderRadius.circular(8),
                   color: Colors.white,
                 ),
@@ -139,6 +142,7 @@ class DonorProfileScreen extends StatelessWidget {
                     style: TextStyle(
                       color: Color(0xFFC30010),
                       fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -164,7 +168,7 @@ class ProfileMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -181,13 +185,14 @@ class ProfileMenuItem extends StatelessWidget {
         title: Text(
           title,
           style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
           ),
         ),
         trailing: const Icon(
           Icons.chevron_right,
-          color: Colors.grey,
+          color: Color.fromARGB(255, 200, 199, 199),
+          size: 35,
         ),
         onTap: onTap,
       ),

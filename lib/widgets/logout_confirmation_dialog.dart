@@ -36,9 +36,10 @@ class LogoutConfirmationDialog extends StatelessWidget {
       elevation: 0,
       backgroundColor: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               'Konfirmasi Keluar',
@@ -50,7 +51,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
             const SizedBox(height: 16),
             const Text(
               'Apakah Anda yakin ingin keluar dari aplikasi?',
-              textAlign: TextAlign.center,
+              textAlign: TextAlign.start,
               style: TextStyle(
                 fontSize: 14,
               ),
@@ -64,18 +65,17 @@ class LogoutConfirmationDialog extends StatelessWidget {
                   child: const Text(
                     'BATAL',
                     style: TextStyle(
-                      color: Colors.blue,
+                      color: Color(0xFF012865),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
                 TextButton(
                   onPressed: onConfirm,
                   child: const Text(
                     'YA',
                     style: TextStyle(
-                      color: Colors.blue,
+                      color: Color(0xFF012865),
                       fontWeight: FontWeight.bold,
                     ),
                   ),

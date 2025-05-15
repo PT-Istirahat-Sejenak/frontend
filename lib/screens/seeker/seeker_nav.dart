@@ -42,7 +42,7 @@ class _SeekerNavState extends State<SeekerNav> {
 
   @override
   Widget build(BuildContext context) {
-    Color selectedColor = Colors.red.shade800;
+    Color selectedColor = Color(0xFFB00020);
     Color unselectedColor = Colors.grey;
 
     return Scaffold(
