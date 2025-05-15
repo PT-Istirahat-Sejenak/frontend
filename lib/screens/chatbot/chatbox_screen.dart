@@ -26,13 +26,16 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: Colors.grey.shade50,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, size: 20, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 30),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, size: 24, color: Colors.black),
+            onPressed: () => Navigator.pop(context),
+          ),
         ),
         title: const Text(
           'Chatbox',
@@ -48,7 +51,7 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
         children: [
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding: const EdgeInsets.all(30),
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[index];
@@ -67,19 +70,27 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: message.isBot ? MainAxisAlignment.start : MainAxisAlignment.end,
+        mainAxisAlignment:
+            message.isBot ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: [
-          if (message.isBot) _buildBotAvatar(),
-          const SizedBox(width: 8),
-          Flexible(
+          if (message.isBot) ...[
+            _buildBotAvatar(),
+            const SizedBox(width: 8),
+          ],
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.7,
+            ),
             child: Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(13),
               decoration: BoxDecoration(
                 color: message.isBot ? Colors.white : const Color(0xFFFFC1C1),
-                borderRadius: BorderRadius.circular(16),
-                border: message.isBot
-                    ? Border.all(color: Colors.grey.shade300)
-                    : null,
+                borderRadius: BorderRadius.only(
+                  topLeft: message.isBot ? Radius.circular(0) : Radius.circular(16),
+                  topRight: message.isBot ? Radius.circular(16) : Radius.circular(0),
+                  bottomLeft: const Radius.circular(16),
+                  bottomRight: const Radius.circular(16),
+                ),
               ),
               child: Text(
                 message.message,
@@ -90,29 +101,29 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 8),
-          if (!message.isBot) const SizedBox(width: 32),
+          if (!message.isBot) const SizedBox(width: 5),
         ],
       ),
     );
   }
 
+
   Widget _buildBotAvatar() {
     return Container(
-      width: 32,
-      height: 32,
+      width: 50,
+      height: 50,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: Colors.grey.shade300,
+          color: Colors.black,
           width: 1,
         ),
       ),
       child: Center(
         child: Image.asset(
           'assets/icons/picture_chatbot.png',
-          width: 20,
-          height: 20,
+          width: 50,
+          height: 50,
           fit: BoxFit.contain,
         ),
       ),
@@ -121,91 +132,88 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
 
   Widget _buildMessageInput() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(
-          top: BorderSide( 
-            color: Colors.grey.shade300,
-            width: 1,
-          ),
-        ),
-      ),
+      padding: const EdgeInsets.all(30),
       child: Row(
         children: [
           Expanded(
             child: Container(
-              height: 50,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              height: 55,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.grey.shade300,
+                  color: Colors.black,
                 ),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(8),
               ),
-              child: TextField(
-                controller: _messageController,
-                decoration: const InputDecoration(
-                  hintText: 'Ketikkan pesan',
-                  hintStyle: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _messageController,
+                      decoration: const InputDecoration(
+                        hintText: 'Ketikkan pesan',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 14,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                    ),
                   ),
-                  border: InputBorder.none,
-                ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.send_outlined,
+                      color: Colors.black87,
+                      size: 24,
+                    ),
+                    onPressed: () async {
+                      final userMessage = _messageController.text.trim();
+                      if (userMessage.isEmpty) return;
+
+                      setState(() {
+                        _messages.add(ChatMessage(
+                          isBot: false,
+                          message: userMessage,
+                          timestamp: DateTime.now(),
+                        ));
+                        _messageController.clear();
+                      });
+
+                      try {
+                        final userProvider = Provider.of<UserProvider>(context, listen: false);
+                        final userIdStr = userProvider.userId ?? '0';
+                        final userId = int.tryParse(userIdStr) ?? 0;
+
+                        final response = await _chatbotService.sendMessage(
+                          message: userMessage,
+                          userId: userId,
+                        );
+
+                        final botReply = response['success']
+                            ? response['response']['reply'] ?? 'Bot tidak merespons.'
+                            : 'Error: ${response['message']}';
+
+                        setState(() {
+                          _messages.add(ChatMessage(
+                            isBot: true,
+                            message: botReply,
+                            timestamp: DateTime.now(),
+                          ));
+                        });
+                      } catch (e) {
+                        setState(() {
+                          _messages.add(ChatMessage(
+                            isBot: true,
+                            message: 'Gagal mengirim pesan. Coba lagi.',
+                            timestamp: DateTime.now(),
+                          ));
+                        });
+                      }
+                    },
+                  ),
+                ],
               ),
             ),
-          ),
-          IconButton(
-            icon: const Icon(
-              Icons.send,
-              color: Colors.grey,
-              size: 24,
-            ),
-            onPressed: () async {
-              final userMessage = _messageController.text.trim();
-              if (userMessage.isEmpty) return;
-
-              setState(() {
-                _messages.add(ChatMessage(
-                  isBot: false,
-                  message: userMessage,
-                  timestamp: DateTime.now(),
-                ));
-                _messageController.clear();
-              });
-
-              try {
-                final userProvider = Provider.of<UserProvider>(context, listen: false);
-                final userIdStr = userProvider.userId ?? '0';
-                final userId = int.tryParse(userIdStr) ?? 0;
-
-                final response = await _chatbotService.sendMessage(
-                  message: userMessage,
-                  userId: userId,
-                );
-
-                final botReply = response['success']
-                    ? response['response']['reply'] ?? 'Bot tidak merespons.'
-                    : 'Error: ${response['message']}';
-
-                setState(() {
-                  _messages.add(ChatMessage(
-                    isBot: true,
-                    message: botReply,
-                    timestamp: DateTime.now(),
-                  ));
-                });
-              } catch (e) {
-                setState(() {
-                  _messages.add(ChatMessage(
-                    isBot: true,
-                    message: 'Gagal mengirim pesan. Coba lagi.',
-                    timestamp: DateTime.now(),
-                  ));
-                });
-              }
-            },
           ),
         ],
       ),
