@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../../services/chatbot_service.dart';
 import '../../providers/user_provider.dart';
@@ -20,6 +21,22 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
       timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
     ),
   ];
+
+  final ScrollController _scrollController = ScrollController();
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  bool _isBotTyping = false;
+
 
   final ChatbotService _chatbotService = ChatbotService();
 
@@ -51,9 +68,27 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
         children: [
           Expanded(
             child: ListView.builder(
+              controller: _scrollController,
               padding: const EdgeInsets.all(30),
-              itemCount: _messages.length,
+              itemCount: _messages.length + (_isBotTyping ? 1 : 0),
               itemBuilder: (context, index) {
+                // Jika ini adalah item terakhir dan sedang mengetik, tampilkan indikator typing
+                if (_isBotTyping && index == _messages.length) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+                    child: Row(
+                      children: [
+                        _buildBotAvatar(),
+                        const SizedBox(width: 8),
+                        const Text(
+                          "...typing",
+                          style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                // Jika bukan, tampilkan chat bubble biasa
                 final message = _messages[index];
                 return _buildMessageItem(message);
               },
@@ -79,7 +114,7 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
           ],
           ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.7,
+              maxWidth: MediaQuery.of(context).size.width * 0.67,
             ),
             child: Container(
               padding: const EdgeInsets.all(13),
@@ -92,11 +127,21 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
                   bottomRight: const Radius.circular(16),
                 ),
               ),
-              child: Text(
-                message.message,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black,
+              child: MarkdownBody(
+                data: message.message,
+                styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                  p: const TextStyle(
+                    fontSize: 14, 
+                    color: Colors.black,
+                    fontFamily: 'Poppins',
+                    fontFamilyFallback: ['Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji'],
+                    ),
+                  strong: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Poppins',
+                    fontFamilyFallback: ['Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji'],
+                    ),
                 ),
               ),
             ),
@@ -110,8 +155,8 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
 
   Widget _buildBotAvatar() {
     return Container(
-      width: 50,
-      height: 50,
+      width: 40,
+      height: 40,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
@@ -177,7 +222,9 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
                           timestamp: DateTime.now(),
                         ));
                         _messageController.clear();
+                        _isBotTyping = true;
                       });
+                      _scrollToBottom();
 
                       try {
                         final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -199,7 +246,9 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
                             message: botReply,
                             timestamp: DateTime.now(),
                           ));
+                          _isBotTyping = false;
                         });
+                        _scrollToBottom();
                       } catch (e) {
                         setState(() {
                           _messages.add(ChatMessage(
@@ -207,7 +256,9 @@ class _ChatboxScreenState extends State<ChatboxScreen> {
                             message: 'Gagal mengirim pesan. Coba lagi.',
                             timestamp: DateTime.now(),
                           ));
+                          _isBotTyping = false;
                         });
+                        _scrollToBottom();
                       }
                     },
                   ),

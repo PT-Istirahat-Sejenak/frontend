@@ -88,8 +88,13 @@ class MyApp extends StatelessWidget {
         builder: (context, userProvider, _) {
           return MaterialApp(
             title: 'Donora',
-            debugShowCheckedModeBanner: false,
-            // theme: AppTheme.lightTheme,
+            debugShowCheckedModeBanner: false,            
+            theme: ThemeData(
+              textTheme: Theme.of(context).textTheme.apply(
+                fontFamily: 'Poppins',
+                fontFamilyFallback: ['Segoe UI Emoji', 'Apple Color Emoji'],
+              ),
+            ),
             initialRoute: AppRoutes.splash,
             onGenerateRoute: (settings) {
               // Handle education routes
