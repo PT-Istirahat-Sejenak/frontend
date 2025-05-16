@@ -5,6 +5,11 @@ import 'package:provider/provider.dart';
 import '../../models/user_role.dart';
 import '../../providers/user_provider.dart';
 
+import 'dart:convert';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+
+
 class ChatDetailScreen extends StatefulWidget {
   final String name;
   final String imageUrl;
@@ -22,11 +27,13 @@ class ChatDetailScreen extends StatefulWidget {
 }
 
 class _ChatDetailScreenState extends State<ChatDetailScreen> {
+  late WebSocketChannel _channel;
+  final String _wsUrl = 'wss://gsc.fahrulhehehe.my.id/api/message';
+
   final TextEditingController _messageController = TextEditingController();
   final List<ChatMessage> _messages = [];
   final ScrollController _scrollController = ScrollController();
 
-  // Helper method to try loading an image with a fallback
   ImageProvider? _tryLoadImage(String imageUrl) {
     try {
       return AssetImage(imageUrl);
@@ -39,75 +46,76 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   @override
   void initState() {
     super.initState();
-    
-    // Print the widget values to debug
-    print("Chat detail screen initialized:");
-    print("Name: ${widget.name}");
-    print("Image URL: ${widget.imageUrl}");
-    print("Is Donor: ${widget.isDonor}");
-    
-    // Initialize date formatting for Indonesian locale
+
     initializeDateFormatting('id_ID', '').then((_) {
-      // Load mock messages after locale is initialized
       _loadMessages();
+      _channel = IOWebSocketChannel.connect(Uri.parse(_wsUrl));
+
+      _channel.stream.listen((data) {
+        final decoded = json.decode(data);
+        final newMessage = ChatMessage(
+          message: decoded['content'],
+          time: DateFormat('HH:mm').format(DateTime.parse(decoded['created_at'])),
+          isFromDonor: decoded['sender_id'] == Provider.of<UserProvider>(context, listen: false).userId,
+          timestamp: DateTime.parse(decoded['created_at']),
+        );
+
+        setState(() {
+          _messages.add(newMessage);
+        });
+
+        _scrollToBottom();
+      });
     });
   }
 
   void _loadMessages() {
-    // Sample chat messages specific to the screen shown in your second image
-    final date = DateTime(2025, 4, 7); // April 7, 2025 to match the screenshot
-    
-    // Add a debug print to verify messages are being added
-    print("Loading mock messages...");
-    
-    setState(() {
-      _messages.addAll([
-        ChatMessage(
-          message: 'Halo, saya bersedia donor darah A+',
-          time: '08:45',
-          isFromDonor: true,
-          timestamp: date,
-        ),
-        ChatMessage(
-          message: 'Terima kasih banyak kak, butuh di Sardjito',
-          time: '08:45',
-          isFromDonor: false,
-          timestamp: date,
-        ),
-        ChatMessage(
-          message: 'Oke, kapan dibutuhkannya kak?',
-          time: '08:45',
-          isFromDonor: true,
-          timestamp: date,
-        ),
-        ChatMessage(
-          message: 'Kalau bisa hari ini kak',
-          time: '08:45',
-          isFromDonor: false,
-          timestamp: date,
-        ),
-        ChatMessage(
-          message: 'Oke, saya ke sana sore ini, ya.',
-          time: '08:45',
-          isFromDonor: true,
-          timestamp: date,
-        ),
-        ChatMessage(
-          message: 'Siap, terima kasih banyak kak.',
-          time: '08:45',
-          isFromDonor: false,
-          timestamp: date,
-        ),
-      ]);
-      
-      // Add a debug print to verify messages count
-      print("Loaded ${_messages.length} messages");
-    });
+    // final date = DateTime(2025, 4, 7);
 
-    // Scroll to the bottom after messages are loaded
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToBottom();
-    });
+    // setState(() {
+    //   _messages.addAll([
+    //     ChatMessage(
+    //       message: 'Halo, saya bersedia donor darah A+',
+    //       time: '08:45',
+    //       isFromDonor: true,
+    //       timestamp: date,
+    //     ),
+    //     ChatMessage(
+    //       message: 'Terima kasih banyak kak, butuh di Sardjito',
+    //       time: '08:45',
+    //       isFromDonor: false,
+    //       timestamp: date,
+    //     ),
+    //     ChatMessage(
+    //       message: 'Oke, kapan dibutuhkannya kak?',
+    //       time: '08:45',
+    //       isFromDonor: true,
+    //       timestamp: date,
+    //     ),
+    //     ChatMessage(
+    //       message: 'Kalau bisa hari ini kak',
+    //       time: '08:45',
+    //       isFromDonor: false,
+    //       timestamp: date,
+    //     ),
+    //     ChatMessage(
+    //       message: 'Oke, saya ke sana sore ini, ya.',
+    //       time: '08:45',
+    //       isFromDonor: true,
+    //       timestamp: date,
+    //     ),
+    //     ChatMessage(
+    //       message: 'Siap, terima kasih banyak kak.',
+    //       time: '08:45',
+    //       isFromDonor: false,
+    //       timestamp: date,
+    //     ),
+    //   ]);
+    // });
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _scrollToBottom();
+    // });
   }
 
   void _scrollToBottom() {
@@ -124,49 +132,145 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     if (_messageController.text.trim().isEmpty) return;
 
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final isUserDonor = userProvider.role == UserRole.pendonor;
-    
-    // If widget.isDonor is true, then the chat partner is a donor
-    // The message is FROM donor if the user is a donor
-    final isFromDonor = isUserDonor;
-    
+    final now = DateTime.now();
+    final messageJson = jsonEncode({
+      "sender_id": userProvider.userId,
+      "receiver_id": 123, // <-- ganti dengan ID penerima (bisa di-pass lewat constructor)
+      "content": _messageController.text.trim(),
+      "created_at": now.toIso8601String(),
+    });
+
+    _channel.sink.add(messageJson);
+
     setState(() {
       _messages.add(
         ChatMessage(
           message: _messageController.text.trim(),
-          time: DateFormat('HH:mm').format(DateTime.now()), // Simpler format that doesn't require locale
-          isFromDonor: isFromDonor,
-          timestamp: DateTime.now(),
+          time: DateFormat('HH:mm').format(now),
+          isFromDonor: userProvider.role == UserRole.pendonor,
+          timestamp: now,
         ),
       );
       _messageController.clear();
     });
-    
+
     _scrollToBottom();
+  }
+
+
+  Widget _buildMessageItem(ChatMessage message, bool isFromCurrentUser) {
+    final bool showDonorBubble = message.isFromDonor;
+    return Align(
+      alignment: isFromCurrentUser
+          ? Alignment.centerRight
+          : Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: showDonorBubble
+              ? const Color(0xFFD32F2F) // Merah pendonor
+              : const Color(0xFFFFC1C1), // Pink pencari
+          borderRadius: BorderRadius.circular(16),
+        ),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.7,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              message.message,
+              style: TextStyle(
+                color: showDonorBubble ? Colors.white : Colors.black,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              message.time,
+              style: TextStyle(
+                color: showDonorBubble ? Colors.white70 : Colors.black54,
+                fontSize: 10,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMessageInput() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 3,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 55,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black, width: 1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _messageController,
+                      decoration: const InputDecoration(
+                        hintText: 'Ketikkan pesan',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 14,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      onSubmitted: (_) => _sendMessage(),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.send_outlined,
+                      color: Colors.black87,
+                      size: 24,
+                    ),
+                    onPressed: _sendMessage,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final isUserDonor = userProvider.role == UserRole.pendonor;
-    
-    // Debug print current state
-    print("Building chat detail screen with ${_messages.length} messages");
-    print("Current user is ${isUserDonor ? 'donor' : 'seeker'}");
 
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
-            // Use CircleAvatar with initials as fallback if image not available
             CircleAvatar(
-              backgroundColor: Colors.purple.shade100,
+              backgroundColor: Colors.grey.shade100,
               child: Text(
                 widget.name.isNotEmpty ? widget.name[0] : "?",
                 style: const TextStyle(color: Colors.black),
               ),
               radius: 16,
-              // We'll try to use the image if it exists, but have a fallback
               backgroundImage: _tryLoadImage(widget.imageUrl),
             ),
             const SizedBox(width: 10),
@@ -178,7 +282,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         ),
         centerTitle: false,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.pop(context),
         ),
         elevation: 1,
@@ -187,106 +291,35 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       ),
       body: Column(
         children: [
-          // Add a direct debug text to see if the body is rendering
-          if (_messages.isEmpty)
-            const Expanded(
-              child: Center(
-                child: Text("No messages to display"),
-              ),
-            )
-          else
-            Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.all(16),
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  final message = _messages[index];
-                  final bool isFromCurrentUser = isUserDonor == message.isFromDonor;
-                  
-                  // Show donor bubble (red) if message is from donor
-                  final bool showDonorBubble = message.isFromDonor;
-                  
-                  return Align(
-                    alignment: isFromCurrentUser 
-                        ? Alignment.centerRight 
-                        : Alignment.centerLeft,
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: showDonorBubble 
-                            ? const Color(0xFFD32F2F) // Red for donor
-                            : const Color(0xFFFFC1C1), // Pink for seeker
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.7,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            message.message,
-                            style: TextStyle(
-                              color: showDonorBubble ? Colors.white : Colors.black,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            message.time,
-                            style: TextStyle(
-                              color: showDonorBubble ? Colors.white70 : Colors.black54,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 1,
-                  blurRadius: 3,
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: const InputDecoration(
-                      hintText: 'Ketikkan pesan',
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    ),
-                    onSubmitted: (_) => _sendMessage(),
+          _messages.isEmpty
+              ? const Expanded(
+                  child: Center(
+                    child: Text("No messages to display"),
+                  ),
+                )
+              : Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.all(16),
+                    itemCount: _messages.length,
+                    itemBuilder: (context, index) {
+                      final message = _messages[index];
+                      final isFromCurrentUser =
+                          isUserDonor == message.isFromDonor;
+                      return _buildMessageItem(message, isFromCurrentUser);
+                    },
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.send, color: Colors.grey),
-                  onPressed: _sendMessage,
-                ),
-              ],
-            ),
-          ),
+          _buildMessageInput(),
         ],
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade100,
     );
   }
 
   @override
   void dispose() {
+    _channel.sink.close();
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -296,7 +329,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 class ChatMessage {
   final String message;
   final String time;
-  final bool isFromDonor; // True if the message is from a donor, false if from a seeker
+  final bool isFromDonor;
   final DateTime timestamp;
 
   ChatMessage({

@@ -10,6 +10,9 @@ class SeekerProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final seeker = Provider.of<UserProvider>(context).seeker;
+
+    print("seeker?.profilePhoto manaaaa: ${seeker?.profilePhoto}");
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: PreferredSize(
@@ -48,22 +51,26 @@ class SeekerProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
-                      image: const DecorationImage(
-                        image: AssetImage('assets/default_profile.png'),
-                        fit: BoxFit.cover,
-                      ),
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
+                    image: DecorationImage(
+                      image: (seeker?.profilePhoto != null &&
+                              seeker!.profilePhoto!.isNotEmpty)
+                          ? NetworkImage(seeker.profilePhoto!)
+                          : const AssetImage('assets/images/default_profile.png')
+                              as ImageProvider,
+                      fit: BoxFit.cover,
                     ),
                   ),
+                ),
                   const SizedBox(height: 10),
-                  const Text(
-                    'Rila Najjakha',
-                    style: TextStyle(
+                  Text(
+                    seeker?.name ?? 'Nama tidak ditemukan',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

@@ -60,7 +60,7 @@ class AuthDonorProvider extends ChangeNotifier {
     required String fcmToken,
     File? profilePhoto,
     String? bloodType,
-    String? rhesus,
+    String? rhesus, required BuildContext context,
   }) async {
     _isLoading = true;
     notifyListeners();
@@ -81,7 +81,17 @@ class AuthDonorProvider extends ChangeNotifier {
         rhesus: rhesus,
         fcmToken: fcmToken
       );
-      return response['success'];
+
+      if (response['success']) {
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        await userProvider.setUser(
+          role: role,
+          token: response['token'],
+          userJson: response['user'],
+        );
+        return true;
+      }
+      return false;      
     } catch (e) {
       debugPrint('Register error: $e');
       return false;

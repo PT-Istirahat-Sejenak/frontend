@@ -46,6 +46,7 @@ class _SeekerNavState extends State<SeekerNav> {
     Color unselectedColor = Colors.grey;
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       body: _pages[_selectedIndex],
       bottomNavigationBar: SafeArea(
         child: Padding(

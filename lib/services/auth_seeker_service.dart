@@ -68,7 +68,9 @@ class AuthSeekerService {
     ..fields['fcm_token'] = fcmToken;
 
   if (profilePhoto != null) {
+    debugPrint("File path: ${profilePhoto.path}");
     final mimeType = lookupMimeType(profilePhoto.path);
+    debugPrint("MIME Type: $mimeType");
     if (mimeType != null && mimeType.startsWith('image/')) {
       final file = await http.MultipartFile.fromPath(
         'profile_photo',
@@ -83,6 +85,8 @@ class AuthSeekerService {
 
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
+    debugPrint('Status Code: ${response.statusCode}');
+    debugPrint('Response Body: ${response.body}');
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = jsonDecode(response.body);

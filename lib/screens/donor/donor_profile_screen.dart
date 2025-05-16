@@ -10,6 +10,8 @@ class DonorProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final donor = Provider.of<UserProvider>(context).donor;
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: PreferredSize(
@@ -54,16 +56,20 @@ class DonorProfileScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
-                      image: const DecorationImage(
-                        image: AssetImage('assets/default_profile.png'),
-                        fit: BoxFit.cover,
-                      ),
+                    image: DecorationImage(
+                      image: (donor?.profilePhoto != null &&
+                              donor!.profilePhoto!.isNotEmpty)
+                          ? NetworkImage(donor.profilePhoto!)
+                          : const AssetImage('assets/images/default_profile.png')
+                              as ImageProvider,
+                      fit: BoxFit.cover,
+                    ),
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
-                    'Rila Najjakha',
-                    style: TextStyle(
+                  Text(
+                    donor?.name ?? 'Nama tidak ditemukan',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

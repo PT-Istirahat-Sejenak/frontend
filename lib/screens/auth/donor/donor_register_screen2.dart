@@ -227,6 +227,8 @@ class _DonorRegisterScreen2State extends State<DonorRegisterScreen2> {
       rhesus: _rhesus!,
       profilePhoto: widget.profileImage,
       fcmToken: token!,
+      context: context,
+      
     );
 
     if (success) {

@@ -82,7 +82,9 @@ class _SeekerRegisterScreenState extends State<SeekerRegisterScreen> {
       password: _passwordController.text,
       confirmPassword: _confirmPasswordController.text,
       role: UserRole.pencari,
+      profilePhoto: _profileImage,
       fcmToken: token!,
+      context: context,
     );
 
     if (success) {

@@ -78,7 +78,9 @@ Future<Map<String, dynamic>> register({
   }
 
   if (profilePhoto != null) {
+    debugPrint("File path: ${profilePhoto.path}");
     final mimeType = lookupMimeType(profilePhoto.path);
+    debugPrint("MIME Type: $mimeType");
     if (mimeType != null && mimeType.startsWith('image/')) {
       final file = await http.MultipartFile.fromPath(
         'profile_photo',
@@ -93,8 +95,10 @@ Future<Map<String, dynamic>> register({
 
   final streamedResponse = await request.send();
   final response = await http.Response.fromStream(streamedResponse);
+  debugPrint('Status Code: ${response.statusCode}');
+  debugPrint('Response Body: ${response.body}');
 
-  print(fcmToken + ' token di service ya');
+  debugPrint(fcmToken + ' token di service ya');
   if (response.statusCode == 200 || response.statusCode == 201) {
     final data = jsonDecode(response.body);
     final user = data['user'];

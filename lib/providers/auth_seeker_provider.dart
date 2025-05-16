@@ -59,6 +59,7 @@ class AuthSeekerProvider extends ChangeNotifier {
     required String confirmPassword,
     required UserRole role,
     required String fcmToken,
+    required BuildContext context,
     File? profilePhoto,
   }) async {
     _isLoading = true;
@@ -78,7 +79,18 @@ class AuthSeekerProvider extends ChangeNotifier {
         profilePhoto: profilePhoto,
         fcmToken: fcmToken,
       );
-      return response['success'];
+
+      if (response['success']) {
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        await userProvider.setUser(
+          role: role,
+          token: response['token'],
+          userJson: response['user'],
+        );
+        return true;
+      }
+
+      return false;
     } catch (e) {
       debugPrint('Register error: $e');
       return false;

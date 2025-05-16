@@ -60,6 +60,8 @@ class UserProvider with ChangeNotifier {
     _token = token;
     _isLoggedIn = true;
 
+    print("SETUSER: profile_photo = ${userJson['profile_photo']}");
+
     if (role == UserRole.pendonor) {
       _donor = DonorUserModel.fromJson(userJson);
     } else if (role == UserRole.pencari) {
