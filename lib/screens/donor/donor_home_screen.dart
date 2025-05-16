@@ -85,7 +85,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: Colors.grey.shade100,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -301,9 +301,6 @@ Widget _buildDonationPrompt(BuildContext context) {
   );
 }
 
-
-
-
   // Reorganized stats section with separate cards
   Widget _buildStatsSection() {
     return SizedBox(
@@ -311,11 +308,11 @@ Widget _buildDonationPrompt(BuildContext context) {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
-          _buildStatsCard("Total Donor", "1", Colors.red),
+          _buildStatsCard("Total Donor", "1", Color(0xFFB00020)),
           const SizedBox(width: 12),
-          _buildStatsCard("Donor\nTerakhir", "10 Jan\n2025", Colors.red),
+          _buildStatsCard("Donor\nTerakhir", "10 Jan\n2025", Color(0xFFB00020)),
           const SizedBox(width: 12),
-          _buildStatsCard("Donor\nSelanjutnya", "10 Maret\n2025", Colors.red),
+          _buildStatsCard("Donor\nSelanjutnya", "10 Maret\n2025", Color(0xFFB00020)),
         ],
       ),
     );
@@ -324,9 +321,9 @@ Widget _buildDonationPrompt(BuildContext context) {
   Widget _buildStatsCard(String title, String value, Color color) {
     return Container(
       width: 120,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF1F1),
+        color: const Color(0xFFFFDBDB),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
@@ -337,8 +334,9 @@ Widget _buildDonationPrompt(BuildContext context) {
             title,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 14,
-              color: Colors.black.withOpacity(0.7),
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
             ),
           ),
           const SizedBox(height: 10),
@@ -373,14 +371,12 @@ Widget _buildDonationPrompt(BuildContext context) {
 
   Widget _buildHistoryCard(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, AppRoutes.donorHistory);
-      },
+      onTap: () => Navigator.pushNamed(context, AppRoutes.donorHistory),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -389,51 +385,21 @@ Widget _buildDonationPrompt(BuildContext context) {
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Riwayat Donor",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, AppRoutes.donorHistory);
-                  },
-                  child: const Icon(Icons.arrow_forward, size: 20),
-                ),
-              ],
+            Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: const Icon(Icons.history, size: 24, color: Colors.black),
             ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.favorite, color: Colors.red, size: 24),
-                ),
-                const SizedBox(width: 12),
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "10 Jan 2025",
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                    Text(
-                      "Donor Darah",
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ],
+            const SizedBox(width: 12),
+            const Text(
+              "Riwayat Donor",
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -441,16 +407,15 @@ Widget _buildDonationPrompt(BuildContext context) {
     );
   }
 
+
   Widget _buildRewardCard() {
     return InkWell(
-      onTap: () {  
-        Navigator.pushNamed(context, AppRoutes.donorReward);
-      },
+      onTap: () => Navigator.pushNamed(context, AppRoutes.donorReward),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -459,57 +424,28 @@ Widget _buildDonationPrompt(BuildContext context) {
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Reward Saya",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, AppRoutes.donorReward);
-                  },
-                  child: const Icon(Icons.arrow_forward, size: 20),
-                ),
-              ],
+            Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: const Icon(Icons.card_giftcard, size: 24, color: Colors.black),
             ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.amber.withOpacity(0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.card_giftcard, color: Colors.amber, size: 24),
-                ),
-                const SizedBox(width: 12),
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "10 Koin",
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      "Tersedia",
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ],
+            const SizedBox(width: 12),
+            const Text(
+              "Reward Saya",
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
             ),
           ],
         ),
       ),
     );
   }
+
 
   Widget _buildEducationSection() {
     return Column(
@@ -533,8 +469,11 @@ Widget _buildDonationPrompt(BuildContext context) {
               },
               child: const Row(
                 children: [
-                  Text("Selengkapnya"),
-                  Icon(Icons.chevron_right, size: 18),
+                  Text(
+                    "Selengkapnya",
+                    style: TextStyle(color: Colors.black),
+                    ),
+                  Icon(Icons.chevron_right, size: 18, color: Colors.black),
                 ],
               ),
             ),

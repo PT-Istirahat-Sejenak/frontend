@@ -125,7 +125,7 @@ class DonorRequestScreen extends StatelessWidget {
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isAvailable ? Colors.red : Colors.grey,
+                      backgroundColor: isAvailable ? Color(0xFFB00020) : Colors.grey,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -141,7 +141,7 @@ class DonorRequestScreen extends StatelessWidget {
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-              color: Colors.red,
+              color: Color(0xFFB00020),
               shape: BoxShape.circle,
             ),
             child: Center(

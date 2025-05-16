@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../widgets/custom_text_field.dart';
+import '../../widgets/custom_dropdown_field.dart';
 
 class DonorEditProfileScreen extends StatefulWidget {
   const DonorEditProfileScreen({super.key});
@@ -18,7 +21,9 @@ class _DonorEditProfileScreenState extends State<DonorEditProfileScreen> {
   final TextEditingController _profilePhotoController = TextEditingController(text: 'WhatsApp image 2024-11-08');
   
   String _bloodType = 'B';
-  String _rhesus = '+ (Positif)';
+  String _rhesus = 'positive';
+
+  XFile? _profileImage;
 
   @override
   void dispose() {
@@ -32,37 +37,55 @@ class _DonorEditProfileScreenState extends State<DonorEditProfileScreen> {
     super.dispose();
   }
 
+    void _pickImage() async {
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        _profileImage = picked;
+        _profilePhotoController.text = picked.path.split('/').last;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      appBar: AppBar(        
         backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+        leadingWidth: 40, // Mengurangi lebar area leading
+        titleSpacing: 12, // Menghilangkan spasi default antara leading dan title
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 25),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 24),
+            onPressed: () => Navigator.of(context).pop(),
+            padding: EdgeInsets.zero,
+          ),
         ),
         title: const Text(
           'Ubah Profil',
           style: TextStyle(
             color: Colors.black,
             fontSize: 18,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w700,
           ),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.check, color: Colors.black),
-            onPressed: () {
-              // Save profile changes and return
-              Navigator.of(context).pop();
-            },
+          Padding(
+            padding: const EdgeInsets.only(right: 25),
+            child: IconButton(
+              icon: const Icon(Icons.check, color: Colors.black),
+              onPressed: () {
+                // Save profile changes and return
+                Navigator.of(context).pop();
+              },
+            ),
           ),
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(25),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -77,31 +100,31 @@ class _DonorEditProfileScreenState extends State<DonorEditProfileScreen> {
             
             // Full Name
             _buildTextField('Nama lengkap', _nameController),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             
             // Birth Date
             _buildTextField('Tanggal lahir', _birthDateController),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             
             // Email
             _buildTextField('Email', _emailController),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             
             // Gender
             _buildTextField('Jenis kelamin', _genderController),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             
             // Address
             _buildTextField('Alamat', _addressController),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             
             // Phone Number
             _buildTextField('No telepon', _phoneController),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             
             // Profile Photo
             _buildProfilePhotoField(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             
             // Blood Type Section
             const Text(
@@ -118,138 +141,73 @@ class _DonorEditProfileScreenState extends State<DonorEditProfileScreen> {
             const SizedBox(height: 16),
             
             // Rhesus
-            _buildDropdownField('Rhesus', _rhesus, ['+ (Positif)', '- (Negatif)']),
+            _buildDropdownField('Rhesus', _rhesus, ['positive', 'negative']),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.black54,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: TextField(
-            controller: controller,
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-              border: InputBorder.none,
-            ),
-          ),
-        ),
-      ],
+  Widget _buildTextField(String label, TextEditingController controller, {bool isPassword = false}) {
+    return CustomTextField(
+      label: label,
+      controller: controller,
+      isPassword: isPassword,
     );
   }
 
   Widget _buildProfilePhotoField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Foto profil',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.black54,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        children: [
+          Expanded(
+            child: CustomTextField(
+              label: 'Unggah foto profil',
+              controller: _profilePhotoController,
+            ),
           ),
-        ),
-        const SizedBox(height: 4),
-        Row(
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: TextField(
-                  controller: _profilePhotoController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-                    border: InputBorder.none,
-                  ),
-                  readOnly: true,
-                ),
+          const SizedBox(width: 8),
+          ElevatedButton(
+            onPressed: _pickImage,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFB00020),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: () {
-                // Handle photo upload
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFC30010),
-                minimumSize: const Size(80, 48),
-              ),
-              child: const Text(
-                'Unggah',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+            child: const Text(
+              'Unggah',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
               ),
             ),
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildDropdownField(String label, String value, List<String> options) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.black54,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: value,
-              isExpanded: true,
-              icon: const Icon(Icons.arrow_drop_down),
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  setState(() {
-                    if (label == 'Golongan darah') {
-                      _bloodType = newValue;
-                    } else if (label == 'Rhesus') {
-                      _rhesus = newValue;
-                    }
-                  });
-                }
-              },
-              items: options.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ),
-        ),
-      ],
+    return CustomDropdownField(
+      label: label,
+      value: value,
+      options: options,
+      onChanged: (String? newValue) {
+        if (newValue != null) {
+          setState(() {
+            if (label == 'Golongan darah') {
+              _bloodType = newValue;
+            } else if (label == 'Rhesus') {
+              _rhesus = newValue;
+            }
+          });
+        }
+      },
     );
   }
+
 }
