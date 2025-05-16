@@ -26,7 +26,7 @@ class _EducationScreenState extends State<EducationScreen> {
       id: '1',
       title: '3 Mitos tentang Donor Darah yang Masih Sering Dipercaya',
       date: '21 April 2025',
-      imagePath: 'assets/images/blood_donor_myth.jpg',
+      imagePath: 'assets/images/edu1.png',
       content: [
         MythFact(
           myth: 'Donor darah menyebabkan tubuh lemas.',
@@ -46,42 +46,14 @@ class _EducationScreenState extends State<EducationScreen> {
       id: '2',
       title: '7 Syarat Umum yang Harus Dipenuhi Sebelum Donor Darah',
       date: '21 April 2025',
-      imagePath: 'assets/images/blood_donor_requirements.jpg',
+      imagePath: 'assets/images/edu2.png',
       content: [], // Add actual content here
     ),
     EducationArticle(
       id: '3',
       title: 'Dampak Positif dan Negatif Donor Darah bagi Kesehatan',
       date: '21 April 2025',
-      imagePath: 'assets/images/blood_donor_effects.jpg',
-      content: [], // Add actual content here
-    ),
-      EducationArticle(
-      id: '3',
-      title: 'Dampak Positif dan Negatif Donor Darah bagi Kesehatan',
-      date: '21 April 2025',
-      imagePath: 'assets/images/blood_donor_effects.jpg',
-      content: [], // Add actual content here
-    ),
-      EducationArticle(
-      id: '3',
-      title: 'Dampak Positif dan Negatif Donor Darah bagi Kesehatan',
-      date: '21 April 2025',
-      imagePath: 'assets/images/blood_donor_effects.jpg',
-      content: [], // Add actual content here
-    ),
-      EducationArticle(
-      id: '3',
-      title: 'Dampak Positif dan Negatif Donor Darah bagi Kesehatan',
-      date: '21 April 2025',
-      imagePath: 'assets/images/blood_donor_effects.jpg',
-      content: [], // Add actual content here
-    ),
-      EducationArticle(
-      id: '4',
-      title: 'Dampak Positif dan Negatif Donor Darah bagi Kesehatan',
-      date: '21 April 2025',
-      imagePath: 'assets/images/blood_donor_effects.jpg',
+      imagePath: 'assets/images/edu3.png',
       content: [], // Add actual content here
     ),
   ];

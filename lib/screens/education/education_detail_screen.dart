@@ -28,15 +28,18 @@ class EducationDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header image
-            Image.asset(
-              article.imagePath,
-              width: double.infinity,
-              height: 200,
-              fit: BoxFit.cover,
+            // Header image with padding
+            Padding(
+              padding: const EdgeInsets.all(30),
+              child: Image.asset(
+          article.imagePath,
+          width: double.infinity,
+          height: 200,
+          fit: BoxFit.cover,
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

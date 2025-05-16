@@ -46,4 +46,8 @@ class AppRoutes {
   //Chatbot Routes
   static const donorChatbot = '/donor/education/chatbot';
   static const seekerChatbot = '/seeker/education/chatbot';
+
+  // //Chat
+  // static const donorChat = '/donor/chat';
+  // static const seekerChat = '/seeker/chat';
 }

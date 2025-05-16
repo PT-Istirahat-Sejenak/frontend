@@ -6,13 +6,15 @@ class DonorRewardDetailScreen extends StatefulWidget {
   final String amount;
   final bool isRed;
   final int coinRequired;
+  final String imagePath;
 
   const DonorRewardDetailScreen({
     super.key,
     required this.voucherName,
     required this.amount,
     required this.isRed,
-    this.coinRequired = 10,
+    required this.coinRequired,
+    required this.imagePath,
   });
 
   @override
@@ -77,7 +79,7 @@ class _DonorRewardDetailScreenState extends State<DonorRewardDetailScreen> {
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -99,12 +101,9 @@ class _DonorRewardDetailScreenState extends State<DonorRewardDetailScreen> {
                   alignment: Alignment.center,
                   children: [
                     Image.asset(
-                      widget.isRed
-                          ? 'assets/images/voucher_detail_red.png'
-                          : 'assets/images/voucher_detail_yellow.png',
+                      widget.imagePath,
                       fit: BoxFit.contain,
-                    ),
-                    // Coins and sparkles are part of the image
+                    ),                
                   ],
                 ),
               ),
@@ -225,8 +224,8 @@ class _DonorRewardDetailScreenState extends State<DonorRewardDetailScreen> {
                   onPressed: _isPhoneEntered ? _showSuccessNotification : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isPhoneEntered 
-                      ? const Color(0xFFE53935) // Red color when phone is entered
-                      : Colors.grey[300],
+                      ? const Color(0xFFB00020)
+                      : Colors.grey.shade300,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(

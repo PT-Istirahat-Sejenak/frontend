@@ -1,3 +1,4 @@
+import 'package:donora_dev/services/websocket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_file.dart';
 import 'package:intl/intl.dart';
@@ -12,14 +13,16 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final String name;
-  final String imageUrl;
+  final String? imageUrl;
   final bool isDonor;
+  final int userId;
 
   const ChatDetailScreen({
     super.key,
     required this.name,
-    required this.imageUrl,
+    this.imageUrl,
     required this.isDonor,
+    required this.userId,
   });
 
   @override
@@ -70,52 +73,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 
   void _loadMessages() {
-    // final date = DateTime(2025, 4, 7);
 
-    // setState(() {
-    //   _messages.addAll([
-    //     ChatMessage(
-    //       message: 'Halo, saya bersedia donor darah A+',
-    //       time: '08:45',
-    //       isFromDonor: true,
-    //       timestamp: date,
-    //     ),
-    //     ChatMessage(
-    //       message: 'Terima kasih banyak kak, butuh di Sardjito',
-    //       time: '08:45',
-    //       isFromDonor: false,
-    //       timestamp: date,
-    //     ),
-    //     ChatMessage(
-    //       message: 'Oke, kapan dibutuhkannya kak?',
-    //       time: '08:45',
-    //       isFromDonor: true,
-    //       timestamp: date,
-    //     ),
-    //     ChatMessage(
-    //       message: 'Kalau bisa hari ini kak',
-    //       time: '08:45',
-    //       isFromDonor: false,
-    //       timestamp: date,
-    //     ),
-    //     ChatMessage(
-    //       message: 'Oke, saya ke sana sore ini, ya.',
-    //       time: '08:45',
-    //       isFromDonor: true,
-    //       timestamp: date,
-    //     ),
-    //     ChatMessage(
-    //       message: 'Siap, terima kasih banyak kak.',
-    //       time: '08:45',
-    //       isFromDonor: false,
-    //       timestamp: date,
-    //     ),
-    //   ]);
-    // });
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   _scrollToBottom();
-    // });
   }
 
   void _scrollToBottom() {
@@ -133,14 +91,13 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final now = DateTime.now();
-    final messageJson = jsonEncode({
-      "sender_id": userProvider.userId,
-      "receiver_id": 123, // <-- ganti dengan ID penerima (bisa di-pass lewat constructor)
-      "content": _messageController.text.trim(),
-      "created_at": now.toIso8601String(),
-    });
 
-    _channel.sink.add(messageJson);
+    // Kirim lewat WebSocketService
+    WebSocketService().sendMessage(
+      userProvider.userId! as int,
+      widget.userId, // ini adalah receiver_id dari argumen ChatDetailScreen
+      _messageController.text.trim(),
+    );
 
     setState(() {
       _messages.add(
@@ -156,6 +113,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 
     _scrollToBottom();
   }
+
 
 
   Widget _buildMessageItem(ChatMessage message, bool isFromCurrentUser) {
@@ -271,7 +229,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 style: const TextStyle(color: Colors.black),
               ),
               radius: 16,
-              backgroundImage: _tryLoadImage(widget.imageUrl),
+              backgroundImage: widget.imageUrl != null ? _tryLoadImage(widget.imageUrl!) : null,
             ),
             const SizedBox(width: 10),
             Text(

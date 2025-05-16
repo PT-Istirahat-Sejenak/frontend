@@ -1,5 +1,7 @@
+import 'package:donora_dev/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../widgets/custom_dropdown_field.dart';
 
@@ -12,18 +14,38 @@ class DonorEditProfileScreen extends StatefulWidget {
 
 class _DonorEditProfileScreenState extends State<DonorEditProfileScreen> {
   // Controllers for text fields
-  final TextEditingController _nameController = TextEditingController(text: 'Rila Najjakha');
-  final TextEditingController _birthDateController = TextEditingController(text: '14-02-2005');
-  final TextEditingController _emailController = TextEditingController(text: 'rila123@gmail.com');
-  final TextEditingController _genderController = TextEditingController(text: 'Perempuan');
-  final TextEditingController _addressController = TextEditingController(text: 'Perempuan');
-  final TextEditingController _phoneController = TextEditingController(text: '08889875679');
-  final TextEditingController _profilePhotoController = TextEditingController(text: 'WhatsApp image 2024-11-08');
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _birthDateController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _profilePhotoController = TextEditingController();
   
-  String _bloodType = 'B';
-  String _rhesus = 'positive';
+  String _bloodType = '';
+  String _rhesus = '';
 
   XFile? _profileImage;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final donor = Provider.of<UserProvider>(context, listen: false).donor;
+
+      if (donor != null) {
+        _nameController.text = donor.name;
+        _birthDateController.text = donor.dateOfBirth ?? '';
+        _emailController.text = donor.email;
+        _genderController.text = donor.gender?? '';
+        _addressController.text = donor.address ?? '';
+        _phoneController.text = donor.phoneNumber ?? '';
+        _profilePhotoController.text = donor.profilePhoto ?? '';
+        _bloodType = donor.bloodType ?? '';
+        _rhesus = donor.rhesus ?? '';
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -194,7 +216,7 @@ class _DonorEditProfileScreenState extends State<DonorEditProfileScreen> {
   Widget _buildDropdownField(String label, String value, List<String> options) {
     return CustomDropdownField(
       label: label,
-      value: value,
+      value: options.contains(value) ? value : null,
       options: options,
       onChanged: (String? newValue) {
         if (newValue != null) {

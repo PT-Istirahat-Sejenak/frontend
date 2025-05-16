@@ -13,7 +13,7 @@ class _DonorRewardScreenState extends State<DonorRewardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade100,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -59,7 +59,7 @@ class _DonorRewardScreenState extends State<DonorRewardScreen> {
                       'Total koin : 10',
                       style: TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
@@ -75,13 +75,13 @@ class _DonorRewardScreenState extends State<DonorRewardScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const DonorRewardHistoryScreen(
-                          hasRewards: false, // Change to true to show reward history
+                          hasRewards: false,
                         ),
                       ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFB01212),
+                    backgroundColor: const Color(0xFFB00020),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
@@ -91,13 +91,13 @@ class _DonorRewardScreenState extends State<DonorRewardScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
-                      Icon(Icons.card_giftcard, size: 18),
+                      Icon(Icons.card_giftcard, size: 20),
                       SizedBox(width: 8),
                       Text(
                         'Lihat Reward Saya',
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],
@@ -123,20 +123,24 @@ class _DonorRewardScreenState extends State<DonorRewardScreen> {
                   childAspectRatio: 0.85,
                   children: [
                     _buildRewardCard(
-                      isRed: true,
-                      amount: 'Rp5.000',
-                    ),
-                    _buildRewardCard(
-                      isRed: false,
+                      imagePath: 'assets/images/voucher_10ribu.png',
                       amount: 'Rp10.000',
+                      coinRequired: 10,
                     ),
                     _buildRewardCard(
-                      isRed: true,
-                      amount: 'Rp5.000',
+                      imagePath: 'assets/images/voucher_20ribu.png',
+                      amount: 'Rp20.000',
+                      coinRequired: 20,
                     ),
                     _buildRewardCard(
-                      isRed: false,
-                      amount: 'Rp10.000',
+                      imagePath: 'assets/images/voucher_50ribu.png',
+                      amount: 'Rp50.000',
+                      coinRequired: 50,
+                    ),
+                    _buildRewardCard(
+                      imagePath: 'assets/images/voucher_100ribu.png',
+                      amount: 'Rp100.000',
+                      coinRequired: 100,
                     ),
                   ],
                 ),
@@ -148,7 +152,11 @@ class _DonorRewardScreenState extends State<DonorRewardScreen> {
     );
   }
 
-  Widget _buildRewardCard({required bool isRed, required String amount}) {
+  Widget _buildRewardCard({
+    required String imagePath,
+    required String amount,
+    required int coinRequired,
+  }) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -157,102 +165,41 @@ class _DonorRewardScreenState extends State<DonorRewardScreen> {
             builder: (context) => DonorRewardDetailScreen(
               voucherName: 'Voucher Pulsa',
               amount: amount,
-              isRed: isRed,
-              coinRequired: 10,
+              isRed: false,
+              coinRequired: coinRequired,
+              imagePath: imagePath,
             ),
           ),
         );
       },
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFFFFF5F5),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Card Image
             SizedBox(
               height: 80,
-              child: isRed
-                  ? Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/voucher_red.png',
-                          fit: BoxFit.contain,
-                        ),
-                        const Positioned(
-                          top: 5,
-                          right: 20,
-                          child: Text(
-                            '%',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                        const Positioned(
-                          bottom: 15,
-                          child: Text(
-                            'VOUCHER',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/voucher_purple.png',
-                          fit: BoxFit.contain,
-                        ),
-                        const Positioned(
-                          top: 5,
-                          right: 20,
-                          child: Text(
-                            '%',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                        const Positioned(
-                          bottom: 15,
-                          child: Text(
-                            'VOUCHER',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.contain,
+              ),
             ),
             const SizedBox(height: 8),
             const Text(
               'Voucher Pulsa',
               style: TextStyle(
                 fontSize: 14,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w700,
               ),
             ),
             Text(
               amount,
               style: const TextStyle(
                 fontSize: 14,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ],
@@ -260,4 +207,5 @@ class _DonorRewardScreenState extends State<DonorRewardScreen> {
       ),
     );
   }
+
 }

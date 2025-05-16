@@ -47,6 +47,8 @@ dependencies:
   firebase_messaging: ^15.2.5
   flutter_markdown: ^0.7.7+1
   web_socket_channel: ^3.0.3
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.3.5
 
 dev_dependencies:
   flutter_test:
@@ -97,3 +99,15 @@ flutter:
           style: italic
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/logo.png
+  android: true
+  ios: true
+  android_gravity: center

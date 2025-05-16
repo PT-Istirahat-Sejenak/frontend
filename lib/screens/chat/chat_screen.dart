@@ -15,27 +15,6 @@ class ChatScreen extends StatelessWidget {
 
     // Mock data for chat list - in a real app, fetch this from your database
     final List<Map<String, dynamic>> chatList = [
-      {
-        'name': 'Muhammad Najwan',
-        'message': 'Halo, saya bersedia donor untuk...',
-        'time': '08:45 PM',
-        'imageUrl': 'assets/images/onboarding_1.png',
-        'isDonor': true,
-      },
-      {
-        'name': 'Nana',
-        'message': 'Halo, saya bersedia donor untuk...',
-        'time': '08:45 PM',
-        'imageUrl': 'assets/images/onboarding_2.png',
-        'isDonor': true,
-      },
-      {
-        'name': 'Marcella',
-        'message': 'Halo, saya bersedia donor untuk...',
-        'time': '08:45 PM',
-        'imageUrl': 'assets/images/onboarding_3.png',
-        'isDonor': true,
-      },
     ];
 
     return Scaffold(
@@ -71,6 +50,7 @@ class ChatScreen extends StatelessWidget {
               name: chat['name'],
               imageUrl: chat['imageUrl'],
               isDonor: chat['isDonor'],
+              userId: chat['userId'],
             ),
             ),
           );

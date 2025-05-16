@@ -1,10 +1,14 @@
+import 'package:donora_dev/providers/user_provider.dart';
+import 'package:donora_dev/screens/chat/chat_detail_screen.dart';
 import 'package:donora_dev/screens/donor/donor_nav.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'dart:io';
 import '../../routes/app_routes.dart';
 import 'upload_proof_donor_overlay.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../widgets/notification_card.dart';
+
 
 class DonorHomeScreen extends StatefulWidget {
   const DonorHomeScreen({super.key});
@@ -17,6 +21,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
   // Initialize Firebase Messaging
   late FirebaseMessaging _firebaseMessaging;
   late String _fcmMessage = '';
+  late RemoteMessage messages;
 
   @override
   void initState() {
@@ -30,6 +35,9 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
 
     // Menangani pesan yang datang saat aplikasi terbuka
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      final userIdString = message.data['user_id'];
+      final userId = int.tryParse(userIdString ?? '');
+      messages = message;
       print("Pesan diterima: ${message.notification?.title} | ${message.notification?.body}");
 
     // Memperbarui message dan menampilkan notifikasi
@@ -40,11 +48,38 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
 
     // Menangani pesan saat aplikasi di latar belakang atau tertutup
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _handleNotificationClick(message);
       print('Aplikasi dibuka dari notifikasi: ${message.notification?.title}');
     });
-
-    
   }
+
+  void _handleNotificationClick(RemoteMessage message) {
+    final data = message.data;
+    // final notifType = data['notif_type'];
+
+    // if (notifType == 'chat') {
+      final userId = int.tryParse(data['user_id'] ?? '');      
+
+      final name = data['name'] ?? 'Pengguna';
+      final imageUrl = data['profile_photo'];
+      final isDonor = data['is_donor'] == 'true';
+
+      if (userId != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatDetailScreen(
+              name: name,
+              imageUrl: imageUrl,
+              isDonor: isDonor,
+              userId: userId,
+            ),
+          ),
+        );
+      // }
+    }
+  }
+
 
   File? _selectedImage;
   bool _isUploading = false;
@@ -84,6 +119,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final donor = Provider.of<UserProvider>(context).donor;
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       body: SafeArea(
@@ -93,7 +129,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildWelcomeSection(context),
+                _buildWelcomeSection(context, donor),
                 const SizedBox(height: 16),
                 // Display the FCM message if available
                 if (_fcmMessage.isNotEmpty)
@@ -104,7 +140,8 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
                     icon: Icons.thumbs_up_down,
                     color: const Color(0xFFB00020),
                     textColor: Colors.white,
-                    onActionPressed: () { //arahiin ke chat kan
+                    onActionPressed: () {          
+                      _handleNotificationClick(messages);            
                       print('Notifikasi ditekan');                      
                     },
                   ),
@@ -123,7 +160,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
     );
   }
 
-  Widget _buildWelcomeSection(BuildContext context) {
+  Widget _buildWelcomeSection(BuildContext context, donor) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -137,22 +174,26 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 2),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/profile.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
+                    image: DecorationImage(
+                      image: (donor?.profilePhoto != null &&
+                              donor!.profilePhoto!.isNotEmpty)
+                          ? NetworkImage(donor.profilePhoto!)
+                          : const AssetImage('assets/images/default_profile.png')
+                              as ImageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                    ),
             ),
             const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
                   "Selamat datang!",
                   style: TextStyle(fontSize: 16, color: Color(0xFF5F5F5F)),
                 ),
                 Text(
-                  "Rila",
+                  donor?.name ?? 'Nama tidak ditemukan',
                   style: TextStyle(
                     fontSize: 20, 
                     fontWeight: FontWeight.bold,
@@ -193,113 +234,113 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
     );
   }
 
-Widget _buildDonationPrompt(BuildContext context) {
-  return Container(
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      color: const Color(0xFFE6F0FF),
-      borderRadius: BorderRadius.circular(16),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Konten dua kolom (teks dan gambar)
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Kolom teks
-            Expanded(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    "Sudah donor darah?",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A1A1A),
+  Widget _buildDonationPrompt(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE6F0FF),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Konten dua kolom (teks dan gambar)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Kolom teks
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "Sudah donor darah?",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1A1A1A),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    "Yuk tukarkan reward",
-                    style: TextStyle(fontSize: 14, color: Color(0xFF333333), fontWeight: FontWeight.bold,),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    "Unggah bukti donor darah Anda sekarang dan dapatkan 10 koin yang bisa ditukar dengan reward menarik!",
-                    style: TextStyle(fontSize: 14, color: Color(0xFF333333)),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 16),
-            // Kolom gambar
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8, bottom: 12), // beri jarak atas dan bawah
-                child: Image.asset(
-                  'assets/images/homeDonorImage.png',
-                  height: 120, // kamu bisa atur ini ke 120 atau 140 kalau masih kecil
-                  fit: BoxFit.contain,
+                    SizedBox(height: 8),
+                    Text(
+                      "Yuk tukarkan reward",
+                      style: TextStyle(fontSize: 14, color: Color(0xFF333333), fontWeight: FontWeight.bold,),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      "Unggah bukti donor darah Anda sekarang dan dapatkan 10 koin yang bisa ditukar dengan reward menarik!",
+                      style: TextStyle(fontSize: 14, color: Color(0xFF333333)),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-
-        // Tombol ada di bawah dua kolom
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF003C96),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            onPressed: _isUploading
-                ? null
-                : () {
-                    showUploadProofDonorOverlay(
-                      context,
-                      onImageSelected: _handleImageSelected,
-                    );
-                  },
-            child: _isUploading
-                ? const Center(
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    ),
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.upload_rounded, size: 20),
-                      SizedBox(width: 8),
-                      Text(
-                        "Unggah Bukti Donor Darah",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
-                    ],
+              const SizedBox(width: 16),
+              // Kolom gambar
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8, bottom: 12), // beri jarak atas dan bawah
+                  child: Image.asset(
+                    'assets/images/homeDonorImage.png',
+                    height: 120, // kamu bisa atur ini ke 120 atau 140 kalau masih kecil
+                    fit: BoxFit.contain,
                   ),
+                ),
+              ),
+            ],
           ),
-        ),
-      ],
-    ),
-  );
-}
+          const SizedBox(height: 20),
+
+          // Tombol ada di bawah dua kolom
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF003C96),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onPressed: _isUploading
+                  ? null
+                  : () {
+                      showUploadProofDonorOverlay(
+                        context,
+                        onImageSelected: _handleImageSelected,
+                      );
+                    },
+              child: _isUploading
+                  ? const Center(
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.upload_rounded, size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          "Unggah Bukti Donor Darah",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   // Reorganized stats section with separate cards
   Widget _buildStatsSection() {

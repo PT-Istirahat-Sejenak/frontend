@@ -1,6 +1,8 @@
+import 'package:donora_dev/providers/user_provider.dart';
 import 'package:donora_dev/screens/seeker/seeker_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../routes/app_routes.dart';
 
@@ -31,6 +33,7 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final seeker = Provider.of<UserProvider>(context).seeker;
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       body: SafeArea(
@@ -40,7 +43,7 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildWelcomeSection(context),
+                _buildWelcomeSection(context, seeker),
                 const SizedBox(height: 16),
                 // Only show search progress section if a search is in progress
                 if (isSearchInProgress) _buildSearchProgressSection(context),
@@ -55,7 +58,7 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
     );
   }
 
-  Widget _buildWelcomeSection(BuildContext context) {
+  Widget _buildWelcomeSection(BuildContext context, seeker) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -69,24 +72,28 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 2),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/profile.png'),
-                  fit: BoxFit.cover,
-                ),
+                    image: DecorationImage(
+                      image: (seeker?.profilePhoto != null &&
+                              seeker!.profilePhoto!.isNotEmpty)
+                          ? NetworkImage(seeker.profilePhoto!)
+                          : const AssetImage('assets/images/default_profile.png')
+                              as ImageProvider,
+                      fit: BoxFit.cover,
+                    ),
               ),
             ),
             const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
                   "Selamat datang!",
                   style: TextStyle(fontSize: 16, color: Color(0xFF5F5F5F)),
                 ),
                 Text(
-                  "Rila",
+                  seeker?.name ?? 'Nama tidak ditemukan',
                   style: TextStyle(
-                    fontSize: 20, 
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF1A1A1A),
                   ),

@@ -1,8 +1,10 @@
 import 'package:donora_dev/firebase_options.dart';
+import 'package:donora_dev/services/websocket_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:donora_dev/providers/user_provider.dart';
 
 //models
 import 'package:donora_dev/models/education_article.dart';
@@ -16,7 +18,6 @@ import 'package:donora_dev/routes/education_routes.dart';
 import 'providers/auth_donor_provider.dart';
 import 'providers/auth_seeker_provider.dart';
 import 'providers/password_checkbox_provider.dart';
-import 'providers/user_provider.dart';
 
 //welcome screens
 import 'screens/splash/splash_screen.dart';
@@ -27,6 +28,10 @@ import 'screens/role/role_selection_screen.dart';
 import 'package:donora_dev/screens/education/education_detail_screen.dart';
 
 //chatbot
+
+//chat
+// import 'screens/chat/chat_detail_screen.dart';
+// import 'screens/chat/chat_screen.dart';
 
 //donor auth
 import 'screens/auth/donor/donor_login_screen.dart';
@@ -86,6 +91,16 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<UserProvider>(
         builder: (context, userProvider, _) {
+          final seeker = userProvider.seeker;
+          final donor = userProvider.donor;
+          if(seeker?.id != null) {
+            final socket = WebSocketService();
+            socket.connect(seeker!.id);
+          }
+          if(donor?.id != null) {
+            final socket = WebSocketService();
+            socket.connect(donor!.id);
+          }
           return MaterialApp(
             title: 'Donora',
             debugShowCheckedModeBanner: false,            
@@ -179,6 +194,12 @@ class MyApp extends StatelessWidget {
                   return MaterialPageRoute(builder: (_) => const SeekerNotificationScreen());
                 case AppRoutes.seekerSearchDonor:
                   return MaterialPageRoute(builder: (_) => const SeekerSearchDonorScreen());
+
+                // //Chat
+                // case AppRoutes.donorChat:
+                //   return MaterialPageRoute(builder: (_) => const ChatDetailScreen(name: '', imageUrl: imageUrl, isDonor: isDonor));
+                // case AppRoutes.seekerChat:
+                //   return MaterialPageRoute(builder: (_) => const ChatDetailScreen(name: name, imageUrl: imageUrl, isDonor: isDonor));
                 
                 case AppRoutes.donorEducationDetail:
                   final article = settings.arguments as EducationArticle;

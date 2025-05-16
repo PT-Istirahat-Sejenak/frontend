@@ -1,5 +1,7 @@
+import 'package:donora_dev/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 import '../../widgets/custom_text_field.dart';
 
@@ -12,16 +14,33 @@ class SeekerEditProfileScreen extends StatefulWidget {
 
 class _SeekerEditProfileScreenState extends State<SeekerEditProfileScreen> {
   // Controllers for text fields
-  final TextEditingController _nameController = TextEditingController(text: 'Rila Najjakha');
-  final TextEditingController _birthDateController = TextEditingController(text: '14-02-2005');
-  final TextEditingController _emailController = TextEditingController(text: 'rila123@gmail.com');
-  final TextEditingController _genderController = TextEditingController(text: 'Perempuan');
-  final TextEditingController _addressController = TextEditingController(text: 'Perempuan');
-  final TextEditingController _phoneController = TextEditingController(text: '08889875679');
-  final TextEditingController _profilePhotoController = TextEditingController(text: 'WhatsApp image 2024-11-08');
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _birthDateController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _profilePhotoController = TextEditingController();
 
   XFile? _profileImage;
-  
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final seeker = Provider.of<UserProvider>(context, listen: false).seeker;
+
+      if (seeker != null) {
+        _nameController.text = seeker.name;
+        _birthDateController.text = seeker.dateOfBirth ?? '';
+        _emailController.text = seeker.email;
+        _genderController.text = seeker.gender?? '';
+        _addressController.text = seeker.address ?? '';
+        _phoneController.text = seeker.phoneNumber ?? '';
+        _profilePhotoController.text = seeker.profilePhoto ?? '';
+      }
+    });
+  }
 
   @override
   void dispose() {
